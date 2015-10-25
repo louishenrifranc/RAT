@@ -44,7 +44,6 @@ public class Log {
 	public void fermerFichier() {
 		pw.flush();
 		pw.close();
-
 	}
 
 }

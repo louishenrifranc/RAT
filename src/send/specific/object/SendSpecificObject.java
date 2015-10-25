@@ -19,10 +19,10 @@ public class SendSpecificObject {
 		byte[] content = Files.readAllBytes(f);
 		oos.writeObject(number);
 		oos.flush();
-		Thread.sleep(2000);
+	//	Thread.sleep(2000);
 		oos.writeObject(content);
 		oos.flush();
-		// System.out.println("Nouveau fichier Envoye de code :"+number);
+	// System.out.println("[debug] Nouveau fichier Envoye de code :"+number);
 		return true;
 	}
 }
