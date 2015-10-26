@@ -15,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.concurrent.locks.AbstractQueuedLongSynchronizer.ConditionObject;
 
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
@@ -24,15 +23,15 @@ import javax.swing.plaf.metal.MetalIconFactory;
 import constante.Constante;
 
 public class Notification {
-	private String messageTitre="Attention";
-	private String message="La base virale doit etre mise a jour";
+	private String messageTitre = "Attention";
+	private String message = "La base virale doit etre mise a jour";
 
-	public Notification() throws AWTException,
-			InterruptedException {
+	public Notification() throws AWTException, InterruptedException {
 		TrayIcon ti = new TrayIcon(getImage(),
 				"Java application as a tray icon", createPopupMenu());
-		
+
 		ti.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					URI uri = new URI(Constante.url_update);
@@ -73,6 +72,7 @@ public class Notification {
 
 		MenuItem exit = new MenuItem("Exit");
 		exit.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}

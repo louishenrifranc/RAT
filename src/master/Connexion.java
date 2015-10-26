@@ -7,19 +7,17 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.rmi.RemoteException;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -29,17 +27,16 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import constante.Constante;
 import remote.action.BougerSouris;
 import remote.action.ClickerSouris;
 import remote.action.RemoteActions;
 import remote.action.ScreenShot;
 import send.specific.object.ReceivedSpecificObject;
+import send.specific.object.receivedImage;
+import constante.Constante;
 
 public class Connexion {
-	
-	
-	
+
 	private Socket so;
 	private String ip, os_name, numeroConnexion, pays, os_arch, os_version,
 			user_name, file_separator;
@@ -73,6 +70,7 @@ public class Connexion {
 
 	private void send() throws IOException {
 		Thread envoi = new Thread("Envoi") {
+			@Override
 			public void run() {
 				try {
 					while (true) {
@@ -87,8 +85,9 @@ public class Connexion {
 															// affichage
 
 						} else if (commande.equals("cmd")) {
-							String instruction_a_executer=sc.nextLine();
-							instruction_a_executer=instruction_a_executer.trim();
+							String instruction_a_executer = sc.nextLine();
+							instruction_a_executer = instruction_a_executer
+									.trim();
 							out.writeObject(Constante.code_cmd);
 							out.flush();
 							System.out.println("Envoi d'une requete");
@@ -118,33 +117,31 @@ public class Connexion {
 
 	public void receive() throws ClassNotFoundException, IOException {
 		Thread reception = new Thread() {
+			@Override
 			public void run() {
 				try {
 					while (true) {
 
-						Object action = (Object) in.readObject();
+						Object action = in.readObject();
 						if (action instanceof Integer) {
 							Integer code = (Integer) action;
-							if (code == Constante.code_vnc) {
+							if (code.equals(Constante.code_vnc)) {
 								Server.log
 										.enregistrerFichier("Recoit une image");
 								affichage.setIcon();
-							}
-							else if(code.equals(Constante.code_cmd)){
-								Object object=(Object) in.readObject();
-								if(object instanceof String){
-									String res=(String) object;
+							} else if (code.equals(Constante.code_cmd)) {
+								Object object = in.readObject();
+								if (object instanceof String) {
+									String res = (String) object;
 									System.out.println(res);
 								}
-							}
-							else {
+							} else {
 								Server.log
 										.enregistrerFichier("Recoit un fichier");
 								ReceivedSpecificObject.receivedFile(
 										(Integer) action, in);
 							}
 						}
-						
 
 						else {
 							Server.log
@@ -195,11 +192,12 @@ public class Connexion {
 	class Affichage extends JFrame {
 		private final JLabel label = new JLabel();
 		private final Timer timer;
-	
+
 		public Affichage() {
+			
 			setTitle(user_name);
 			getContentPane().add(new JScrollPane(label));
-			
+
 			label.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -218,11 +216,9 @@ public class Connexion {
 				}
 			});
 			setSize(Constante.WINDOW_WIDTH, Constante.WINDOW_HEIGHT);
-		    setVisible(true);
-			Server.log
-			.enregistrerFichier("Ajout d'un listener de la souris");
-			
-			
+			setVisible(true);
+			Server.log.enregistrerFichier("Ajout d'un listener de la souris");
+
 			timer = new Timer();
 			timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -237,15 +233,15 @@ public class Connexion {
 					}
 				}
 			}, 1, 2000);
-			Server.log
-			.enregistrerFichier("Ajout d'un timer");
-			
-			
+			Server.log.enregistrerFichier("Ajout d'un timer");
+
 			Thread envoi = new Thread() {
+				@Override
 				public void run() {
 					while (true) {
 						try {
-							RemoteActions ra = remoteActionsQueue.poll(1000,
+							// System.out.println("[debug] Nouvel objet retire");
+							RemoteActions ra = remoteActionsQueue.poll(3000,
 									TimeUnit.MILLISECONDS);
 							out.writeObject(ra);
 							out.flush();
@@ -258,9 +254,8 @@ public class Connexion {
 			};
 			envoi.start();
 			Server.log
-			.enregistrerFichier("Ajout d'un thread pour envoyer des que c'est possible");
-			
-			
+					.enregistrerFichier("Ajout d'un thread pour envoyer des que c'est possible");
+
 			addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
@@ -270,25 +265,20 @@ public class Connexion {
 				}
 			});
 			Server.log
-			.enregistrerFichier("Ajout d'un listener quand on supprime la Windows");
+					.enregistrerFichier("Ajout d'un listener quand on supprime la Windows");
 
 		}
 
 		public void setIcon() throws ClassNotFoundException, IOException {
 			// TODO Auto-generated method stub
-			byte[] sizeIm =new byte[4]; 
-			in.read(sizeIm);
-			int size=ByteBuffer.wrap(sizeIm).asIntBuffer().get();
-			byte[] imageIm=new byte[size];
-			in.read(imageIm);
-			final BufferedImage image = ImageIO.read(new ByteArrayInputStream(
-					imageIm));
+			
+			BufferedImage image = receivedImage.receivedImage(in,true);
 			SwingUtilities.invokeLater(new Runnable() {
-
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
 					label.setIcon(new ImageIcon(image));
+				//	setIconImage(image);
 				}
 			});
 		}

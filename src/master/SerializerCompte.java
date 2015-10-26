@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 public class SerializerCompte {
-	
+
 	public static void enregistrer(String args, Compte compte) {
 		File fichier = new File(args);
 		try {

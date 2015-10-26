@@ -2,9 +2,7 @@ package master;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class Compte implements Serializable {

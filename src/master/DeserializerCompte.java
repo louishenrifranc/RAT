@@ -1,11 +1,15 @@
 package master;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 public class DeserializerCompte {
 
 	private static ObjectInputStream ois;
 
-	public static Compte charger(String args)  {
+	public static Compte charger(String args) {
 		Compte compte = null;
 		File fichier = new File(args);
 		try {
@@ -14,7 +18,7 @@ public class DeserializerCompte {
 			}
 			ois = new ObjectInputStream(new FileInputStream(fichier));
 			compte = (Compte) ois.readObject();
-			
+
 		} catch (IOException e) {
 			System.out.println(" Erreur lors de la lecture du fichier. ");
 		} catch (ClassNotFoundException e) {
