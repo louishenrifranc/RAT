@@ -17,8 +17,7 @@ public abstract class Constante {
 	public static Integer nombredeFichierRecupere() {
 		return nombredeFichiers++;
 	}
-	
-	
-	public static final String code_message_cmd="XXXXXXX000000123";
+
+	public static final String code_message_cmd = "XXXXXXX000000123";
 
 }

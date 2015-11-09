@@ -1,4 +1,18 @@
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
 package remote.action;
+ 
 
 import java.awt.AWTException;
 import java.awt.Desktop;
@@ -21,23 +35,38 @@ import javax.swing.JOptionPane;
 import javax.swing.plaf.metal.MetalIconFactory;
 
 import constante.Constante;
-
+/**
+ * 			Classe qui permet d'envoyer un signal , une notification depuis le Systeme d'Exploitation
+ * @author lh
+ *
+ */
 public class Notification {
+	
+
+/**************************************************** *****************************************************************************************/
+/*													   ARGUMENTS																	   			   /	
+/**********************************************************************************************************************************************/
+	
 	private String messageTitre = "Attention";
 	private String message = "La base virale doit etre mise a jour";
 
+	
+
+/**************************************************** *****************************************************************************************/
+/*													   CONSTRUCTEUR																	   			   /	
+/**********************************************************************************************************************************************/
 	public Notification() throws AWTException, InterruptedException {
 		TrayIcon ti = new TrayIcon(getImage(),
 				"Java application as a tray icon", createPopupMenu());
 
-		ti.addActionListener(new ActionListener() {
+		ti.addActionListener(new ActionListener() {								// Si l'on clique sur la notification
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					URI uri = new URI(Constante.url_update);
 
 					Desktop dt = Desktop.getDesktop();
-					if (dt.isSupported(Desktop.Action.BROWSE)) {
+					if (dt.isSupported(Desktop.Action.BROWSE)) {				// Si c'est possible de lancer le Navigateur par défault
 						dt.browse(uri);
 					} else {
 						JOptionPane.showMessageDialog(null,
@@ -58,6 +87,17 @@ public class Notification {
 		ti.displayMessage(messageTitre, message, TrayIcon.MessageType.WARNING);
 	}
 
+	
+
+/**************************************************** *****************************************************************************************/
+/*													   METHODES																	   			   /	
+/**********************************************************************************************************************************************/
+	
+	/**
+	 * Forgage de l'icone de la fenetre
+	 * @return
+	 * @throws HeadlessException
+	 */
 	private Image getImage() throws HeadlessException {
 		Icon defaultIcon = MetalIconFactory.getTreeHardDriveIcon();
 		Image img = new BufferedImage(defaultIcon.getIconWidth(),
@@ -67,6 +107,14 @@ public class Notification {
 		return img;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
 	private static PopupMenu createPopupMenu() throws HeadlessException {
 		PopupMenu menu = new PopupMenu();
 

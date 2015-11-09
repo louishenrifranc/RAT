@@ -10,11 +10,25 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
-
+/**
+ * Classe qui redéfinit la classe de l'interface RemoteActions. Utilise le robot pour creer une capture d'ecran.  
+ * @author lh
+ *
+ */
 public class ScreenShot implements RemoteActions {
-
+	
+/**********************************************************************************************************************************************/
+/*													   ARGUMENT																	   			   /	
+/**********************************************************************************************************************************************/
 	private static byte[] size = null;
 
+	
+	
+	
+	
+/**********************************************************************************************************************************************/
+/*													   CONSTRUCTEUR																	   			   /	
+/**********************************************************************************************************************************************/
 	@Override
 	public Object executer(Robot robot) throws IOException {
 		// TODO Auto-generated method stub
@@ -26,9 +40,14 @@ public class ScreenShot implements RemoteActions {
 		size = ByteBuffer.allocate(4).putInt(baos.size()).array();
 
 		return baos.toByteArray();
-		
+
 	}
 
+	
+	
+/**********************************************************************************************************************************************/
+/*													   METHODES																	   			   /	
+/**********************************************************************************************************************************************/
 	public static byte[] getsize() {
 
 		return size;

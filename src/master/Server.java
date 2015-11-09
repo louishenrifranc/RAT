@@ -34,7 +34,8 @@ public class Server extends Thread {
 		String compte;
 		Scanner sc = new Scanner(System.in);
 		compte = sc.next();
-		log.enregistrerFichier("********************** Nouveau Compte :" + compte);
+		log.enregistrerFichier("********************** Nouveau Compte :"
+				+ compte);
 		compteActuel = new Compte(compte); /*
 											 * DeserializerCompte.charger(compte)
 											 */
@@ -54,7 +55,7 @@ public class Server extends Thread {
 				validerConnexion(s);
 			}
 		} catch (Exception e) {
-		//	e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 

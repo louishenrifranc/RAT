@@ -10,18 +10,13 @@ import constante.Constante;
 
 public class ReceivedSpecificObject {
 
-	
-
 	private final static int FILE_SIZE = 83886080;
 
 	public static int receivedFile(Integer code, ObjectInputStream is)
 			throws IOException, ClassNotFoundException {
-		String nomfichier = Paths.get("").toAbsolutePath()
-				.toString()
-				+ System.getProperty("file.separator")
-				+ "FichierRecuperer"
-				+ System.getProperty("file.separator")
-				+ "fichier"
+		String nomfichier = Paths.get("").toAbsolutePath().toString()
+				+ System.getProperty("file.separator") + "FichierRecuperer"
+				+ System.getProperty("file.separator") + "fichier"
 				+ Constante.nombredeFichierRecupere() + ".txt";
 		File file = new File(nomfichier);
 

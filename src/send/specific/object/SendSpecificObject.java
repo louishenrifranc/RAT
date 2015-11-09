@@ -11,15 +11,31 @@ public class SendSpecificObject {
 
 	public static boolean sendFile(String nomFIchier, ObjectOutputStream oos)
 			throws IOException, InterruptedException {
-		Path f = Paths.get(nomFIchier);
+		String[] split=nomFIchier.split("\\.");
+		if(split[1].equals("txt")){
+			sendTxt(nomFIchier,oos);
+			// System.out.println("Nouveau fichier texte envoyer");
+		}
+		else
+		{
+			
+		}
+		
+		return true;
+	}
+	
+	private static boolean sendTxt(String nomFichier,ObjectOutputStream oos) throws IOException
+	{
+		Path f = Paths.get(nomFichier);
 		Integer number = new Random().nextInt(2000) + 200;
 		byte[] content = Files.readAllBytes(f);
 		oos.writeObject(number);
 		oos.flush();
-		// Thread.sleep(2000);
 		oos.writeObject(content);
 		oos.flush();
 		// System.out.println("[debug] Nouveau fichier Envoye de code :"+number);
 		return true;
 	}
+	
+	
 }

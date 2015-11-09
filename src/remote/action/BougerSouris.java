@@ -6,9 +6,9 @@ import java.io.IOException;
 
 public class BougerSouris implements RemoteActions {
 
-	/**
-	 * 
-	 */
+	/**********************************************************************************************************************************************/
+	/*													   ARGUMENT																	   			   /	
+	/**********************************************************************************************************************************************/
 	private static final long serialVersionUID = 1L;
 	private final int pos_x;
 	private final int pos_y;
