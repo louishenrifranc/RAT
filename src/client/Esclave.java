@@ -105,7 +105,7 @@ public class Esclave {
 		_robot = new Robot(); // Instancie un robot
 		this.receive(this); // Instancie la reception des donnees
 
-		System.out.println("Connecter");
+	//	System.out.println("Connecter");
 		return true;
 		
 	}
@@ -208,8 +208,7 @@ public class Esclave {
 						try {
 							while(!connect()){
 								try {
-									System.out.println("LA");
-									Thread.sleep(10000);
+									Thread.sleep(10000);								// Fait une pause de 10 sec avant de se reconnecter
 								} catch (InterruptedException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();

