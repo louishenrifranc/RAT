@@ -1,5 +1,6 @@
 package master;
 
+import gui.FenetrePrincipal;
 import gui.MCmdJInternalFrame;
 
 import java.awt.event.MouseAdapter;
@@ -224,6 +225,7 @@ public class Connexion {
 										.enregistrerFichier("Recoit un fichier");
 								ReceivedSpecificObject.receivedFile(
 										(Integer) action, _in);
+								FenetrePrincipal.setBackgroundReceivingFile();
 							}
 						}
 

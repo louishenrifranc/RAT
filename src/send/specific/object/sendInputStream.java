@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Classe implementé pour la lecture du flux de sortie du terminal
+ * @author lh
+ *
+ */
 public class sendInputStream implements Runnable {
 
 	private final InputStream inputStream;

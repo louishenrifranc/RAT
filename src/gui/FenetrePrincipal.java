@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Scanner;
 import java.util.Vector;
 
 import javax.swing.event.ListSelectionEvent;
@@ -39,6 +40,10 @@ import org.omg.PortableInterceptor.INACTIVE;
 
 import constante.Constante;
 import master.Connexion;
+import master.Server;
+
+import java.awt.Color;
+import java.awt.Font;
 
 public class FenetrePrincipal {
 
@@ -81,11 +86,17 @@ public class FenetrePrincipal {
 		fenetres =new Vector<>(0);														// Initialise les valeurs à -1
 		
 		list = new JList();																// Jlist
+		list.setBackground(Color.ORANGE);
+		list.setForeground(new Color(0, 0, 128));
 		
 		JToolBar toolBar = new JToolBar();												// Tool Bar
+		toolBar.setBackground(Color.ORANGE);
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		
 		JButton btnNewButton = new JButton("Notifications");
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton.setForeground(Color.BLUE);
+		btnNewButton.setBackground(Color.ORANGE);
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) 
@@ -102,6 +113,9 @@ public class FenetrePrincipal {
 		toolBar.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Recuperer Keylog");						// Recuperer le fichier de keylog
+		btnNewButton_1.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		btnNewButton_1.setForeground(Color.BLUE);
+		btnNewButton_1.setBackground(Color.ORANGE);
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -116,6 +130,9 @@ public class FenetrePrincipal {
 		toolBar.add(btnNewButton_1);
 		
 		JButton btnNewButton_2 = new JButton("Terminal");								
+		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton_2.setBackground(Color.ORANGE);
+		btnNewButton_2.setForeground(Color.BLUE);
 		btnNewButton_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -125,12 +142,17 @@ public class FenetrePrincipal {
 		toolBar.add(btnNewButton_2);
 		
 		desktopPane = new JDesktopPane();											// Espace de travail
+		desktopPane.setBackground(new Color(0, 0, 128));
+		
 		frame.getContentPane().add(desktopPane, BorderLayout.CENTER);
 		
 		
 		
 	
 		JButton btnNewButton_3 = new JButton("VNC");
+		btnNewButton_3.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		btnNewButton_3.setForeground(Color.BLUE);
+		btnNewButton_3.setBackground(Color.ORANGE);
 		btnNewButton_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -145,6 +167,7 @@ public class FenetrePrincipal {
 		frame.getContentPane().add(panel, BorderLayout.EAST);
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.ORANGE);
 		frame.getContentPane().add(panel_1, BorderLayout.WEST);
 		
 	    JScrollPane scrollPane = new JScrollPane(list);
@@ -314,5 +337,27 @@ public class FenetrePrincipal {
 		list.setEnabled(true);									// Permet de remodifier la liste
 	}
 	
-	
+	public static void setBackgroundReceivingFile() throws InterruptedException
+	{
+		int i=3;
+		while(i-- >0)
+		{
+		desktopPane.setBackground(Color.GREEN);
+		Thread nouveauFichier = new Thread("Nwe"+i) {								// Lance le thread d'envoi
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				}
+		};
+		nouveauFichier.start();
+		nouveauFichier.join(500);
+		nouveauFichier.stop();
+		desktopPane.setBackground(Color.BLUE);
+		}
+	}
 }

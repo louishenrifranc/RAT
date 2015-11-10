@@ -12,14 +12,14 @@ public class ReceivedSpecificObject {
 
 	private final static int FILE_SIZE = 83886080;
 
-	public static int receivedFile(Integer code, ObjectInputStream is)
+	public static int receivedFile(Integer code, ObjectInputStream is)		// Gerer la reception des IMAGES !!!!!!!!!!
 			throws IOException, ClassNotFoundException {
 		String nomfichier = Paths.get("").toAbsolutePath().toString()
 				+ System.getProperty("file.separator") + "FichierRecuperer"
 				+ System.getProperty("file.separator") + "fichier"
 				+ Constante.nombredeFichierRecupere() + ".txt";
 		File file = new File(nomfichier);
-
+		System.out.println("LA");
 		byte[] content = (byte[]) is.readObject();
 		Files.write(file.toPath(), content);
 
