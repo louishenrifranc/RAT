@@ -35,9 +35,16 @@ public class MJInternalFrame extends JInternalFrame implements
 					throw new PropertyVetoException("Annuler", null);
 				}
 				else{
+					if(this instanceof MCmdJInternalFrame)
 					FenetrePrincipal.deletePublic(this,Constante.code_terminal_affichage);
-					
-				}
+					else if(this instanceof MVNCJInternalFrame)
+						FenetrePrincipal.deletePublic(this,Constante.code_vnc_afficage);
+					else if(this instanceof MInfoJInternalFrame)
+						FenetrePrincipal.deletePublic(this,Constante.code_info_affichage);
+					else {
+						
+					}
+				}	
 			}
 		}
 	}

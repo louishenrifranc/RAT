@@ -22,7 +22,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import master.Connexion;
 
 public class MCmdJInternalFrame extends MJInternalFrame {
-	private JTextPane _jTextArea;
+	private JTextArea _jTextArea;
 	private JTextField _jTextField;
 	private JPanel _jpanelFille;
 
@@ -30,8 +30,14 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 			final Connexion connexion) {
 		super(title, connexion, nframe);
 		_jpanelFille = _jpanel;
-		_jTextArea = new JTextPane();
+		_jTextArea = new JTextArea(15,30);
 		_jTextField = new JTextField();
+		_jTextArea.setOpaque(true);
+		_jTextArea.setForeground(Color.green);
+		_jTextArea.setBackground(Color.BLACK);
+		_jTextField.setForeground(Color.green);
+		_jTextField.setBackground(Color.BLACK);
+		
 		setContentPane(_jpanelFille);
 		getContentPane().setLayout(new BorderLayout());
 		JScrollPane scrollpane=new JScrollPane(_jTextArea);					// Ameliorer le JScrollPane
@@ -46,7 +52,7 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 				String line = _jTextField.getText();
 				connexion.sendCmdCommand(line, MCmdJInternalFrame.this);
 				_jTextField.setText("");
-				append(line);
+				append(line+">\n");
 			}
 		});
 

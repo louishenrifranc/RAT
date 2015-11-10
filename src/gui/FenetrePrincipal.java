@@ -2,13 +2,16 @@ package gui;
 
 import java.awt.EventQueue;
 
+import javax.imageio.ImageIO;
 import javax.print.attribute.standard.Sides;
 import javax.swing.JFrame;
 
 import java.awt.BorderLayout;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -31,6 +34,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.concurrent.locks.AbstractQueuedLongSynchronizer.ConditionObject;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -44,6 +48,8 @@ import master.Server;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+import java.io.IOException;
 
 public class FenetrePrincipal {
 
@@ -156,10 +162,22 @@ public class FenetrePrincipal {
 		btnNewButton_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				clicked(Constante.code_vnc_afficage);
 			}
 		});
 		toolBar.add(btnNewButton_3);
+		
+		JButton btnNewButton_4 = new JButton("Informations");
+		btnNewButton_4.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnNewButton_4.setForeground(Color.BLUE);
+		btnNewButton_4.setBackground(Color.ORANGE);
+		btnNewButton_4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				clicked(Constante.code_info_affichage);
+			}
+		});
+		toolBar.add(btnNewButton_4);
 		
 	
 		
@@ -216,8 +234,9 @@ public class FenetrePrincipal {
 		{
 			Index_To_Connexion.add(i, connexion);
 			fenetres.insertElementAt(i, 0);
-			lists.add(i++,connexion.get_ip());
-		
+			
+			lists.add(i++,connexion.get_ip().split("/")[1]);
+					
 		}
 		list.setModel(lists);
 	}
@@ -270,6 +289,20 @@ public class FenetrePrincipal {
 				      } catch (java.beans.PropertyVetoException e) {}
 					mvncJF.setVisible(true);
 
+				}
+				else if(keycode == Constante.code_info_affichage)
+				{
+					MInfoJInternalFrame minfJF = new MInfoJInternalFrame(connexion.get_user_name()+" info", connexion,actualframes.size());
+					actualframes.add(minfJF );
+					frames.get(index).add(minfJF );
+					desktopPane.add(minfJF );
+					minfJF .setBounds(100, 100, 200, 200);
+					minfJF .setSize(100,150);
+					minfJF .setLocation(30*actualframes.size(),30*actualframes.size());
+					try {
+						minfJF .setSelected(true);
+				      } catch (java.beans.PropertyVetoException e) {}
+					minfJF .setVisible(true);
 				}
 				fenetres.set(index,fenetres.get(index)+ (1 << keycode));		// Indique que l'on ne peut plus creer de nouvelles fenetres pour ce type maintenant
 			}

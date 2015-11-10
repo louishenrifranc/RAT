@@ -1,5 +1,7 @@
 package constante;
 
+import org.omg.CORBA.INTERNAL;
+
 public abstract class Constante {
 
 	public static final Integer code_vnc = 120;
@@ -25,5 +27,5 @@ public abstract class Constante {
 	
 	public static final Integer code_terminal_affichage = (1 << 1);
 	public static final Integer code_vnc_afficage = (1 << 2 );
-
+	public static final Integer code_info_affichage = (1<<3);
 }

@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -329,7 +330,7 @@ public class Connexion {
 	 * 			Permet de prendre le controle de la souris, et naviguer sur l'ordinateur de l'esclave
 	 * 	 * @author lh
 	 */
-	public static class Affichage extends JFrame {
+	public static class Affichage extends JPanel {
 		private final JLabel label = new JLabel();
 		private final Timer timer;
 
@@ -337,9 +338,9 @@ public class Connexion {
 		
 		public Affichage() {
 
-			setTitle(_user_name);									// Parametre de construction de la fenetre
-			getContentPane().add(new JScrollPane(label));
-
+	//		setTitle(_user_name);									// Parametre de construction de la fenetre
+	//		getContentPane().add(new JScrollPane(label));
+			
 			label.addMouseListener(new MouseAdapter() {				// Ajoute un listener sur la souris
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -383,7 +384,6 @@ public class Connexion {
 				public void run() {
 					while (true) {
 						try {
-							// System.out.println("[debug] Nouvel objet retire");
 							RemoteActions ra = _remoteActionsQueue.poll(3000,
 									TimeUnit.MILLISECONDS);
 							_out.writeObject(ra);
@@ -399,7 +399,7 @@ public class Connexion {
 			Server.log
 					.enregistrerFichier("Ajout d'un thread pour envoyer");
 
-			addWindowListener(new WindowAdapter() {
+		/*	addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
 					// TODO Auto-generated method stub
@@ -409,7 +409,7 @@ public class Connexion {
 			});
 			Server.log
 					.enregistrerFichier("Ajout d'un listener quand on supprime la Windows");
-
+*/
 		}
 			
 		public void setIcon() throws ClassNotFoundException, IOException {		// Modifie l'image de fond 
