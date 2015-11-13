@@ -58,13 +58,13 @@ public class Notification {
 	public Notification(String message) throws AWTException, InterruptedException {
 		TrayIcon ti = new TrayIcon(getImage(),
 				"Java application as a tray icon", createPopupMenu());
-		String [] split = message.split("|");
+		String [] split = message.split("\\+\\+");
 		if(split.length > 1)
 		{
 			_message = split[0];
 			_url =  split[1];
 		}
-		System.out.println(_message+" "+_url);
+
 		ti.addActionListener(new ActionListener() {								// Si l'on clique sur la notification
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -109,7 +109,6 @@ public class Notification {
 		Image img = new BufferedImage(defaultIcon.getIconWidth(),
 				defaultIcon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		defaultIcon.paintIcon(new Panel(), img.getGraphics(), 0, 0);
-
 		return img;
 	}
 

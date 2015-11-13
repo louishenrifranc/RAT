@@ -99,7 +99,7 @@ public class FenetrePrincipal {
 		Index_To_Connexion = new Vector<>();
 		fenetres =new Vector<>(0);														// Initialise les valeurs à -1
 		
-		list = new JList();																// Jlist
+		list = new JList<String>();																// Jlist
 		list.setBackground(new Color(0, 153, 51));
 		list.setForeground(new Color(0, 0, 128));
 		
@@ -419,6 +419,20 @@ public class FenetrePrincipal {
 		int index = getSelectedIndex();							// Recupere le nouvel index
 		actualframes.clear();
 		
+		if(index != 0)
+		{
+			Connexion connexion = Index_To_Connexion.elementAt(index);
+			if(connexion.get_os_name().contains("Win") || connexion.get_os_name().contains("win"))
+			{
+				frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
+						.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"WW.png"));
+			}
+			else
+			{
+				frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
+						.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"logo27.png"));
+			}
+		}
 		for(int i=0;i<frames.get(index).size();i++)
 		{
 			if( index  == -1 || frames.get(index).isEmpty()) break;	// Si pas d'indice selectionné ou pas de fenetres active pour la connexion

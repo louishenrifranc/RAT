@@ -15,7 +15,9 @@ public class MVNCJInternalFrame extends MJInternalFrame{
 	
 	public MVNCJInternalFrame(String title, Connexion connexion, int nframe) {
 		super(title, connexion, nframe);
+		System.out.println("[debug] MVNCJInternalFrame: Constructeur");
 		affichage=new Affichage();
+		
 		getContentPane().add(affichage);
 		affichage.setVisible(true);
 	}

@@ -37,8 +37,11 @@ public class ScreenShot implements RemoteActions {
 				dimension.width, dimension.height));
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(screenshot, "png", baos);
-		size = ByteBuffer.allocate(4).putInt(baos.size()).array();
-		System.out.println("Executer");
+		size = ByteBuffer.allocate(6).putInt(baos.size()).array();
+					// Alloue 4 octets : 2,147,483,647 comme taille max
+					// Y met dedans la taille du ByteArrayOutputStream
+					// Renvoit le tableau de bytes contenant la taille
+		System.out.println("[debug] ScreenShot: commande executer");
 		return baos.toByteArray();
 	}
 

@@ -212,7 +212,7 @@ public class Connexion {
 			_out.writeObject(Constante.code_notif);
 
 		_out.flush();
-		_out.writeObject(message + "|" + url);
+		_out.writeObject(message + "++" + url);
 		_out.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -260,7 +260,8 @@ public class Connexion {
 								Server.log
 										.enregistrerFichier("Recoit une image");
 							
-								
+								System.out.println("[debug] Connexion: Reception codeImage");
+
 								_affichage.setIcon();						// Fait appelle a la methode de la classe Affichage
 							
 							} else if (code.equals(Constante.code_cmd)) {	// ...un  code CMD
@@ -391,7 +392,8 @@ public class Connexion {
 
 	//		setTitle(_user_name);									// Parametre de construction de la fenetre
 	//		getContentPane().add(new JScrollPane(label));
-			
+			System.out.println("[debug] Affichage: Constructeur");
+
 			label.addMouseListener(new MouseAdapter() {				// Ajoute un listener sur la souris
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -404,6 +406,7 @@ public class Connexion {
 																			// screenshot
 						_remoteActionsQueue.put(new ClickerSouris(e));
 						_remoteActionsQueue.put(new ScreenShot());
+						System.out.println("[debug] Affichage: Ajout initial dans la Queue");
 
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
@@ -423,6 +426,8 @@ public class Connexion {
 					// TODO Auto-generated method stub
 					try {
 						_remoteActionsQueue.put(new ScreenShot());
+						System.out.println("[debug] Affichage: Nouveau Screen ajouter a la queue");
+
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -436,10 +441,12 @@ public class Connexion {
 				public void run() {
 					while (true) {
 						try {
-							RemoteActions ra = _remoteActionsQueue.poll(3000,
+							RemoteActions ra = _remoteActionsQueue.poll(0,
 									TimeUnit.MILLISECONDS);
 							_out.writeObject(ra);
 							_out.flush();
+							System.out.println("[debug] Affichage: Envoit a l'esclave un RemoteAction");
+
 							Server.log.enregistrerFichier("Envoi d'une nouvelle requete de RemoteActions");
 						} catch (InterruptedException | IOException e) {
 							// TODO Auto-generated catch block
@@ -457,18 +464,12 @@ public class Connexion {
 			
 		public void setIcon() throws ClassNotFoundException, IOException {		// Modifie l'image de fond 
 			// TODO Auto-generated method stub
+			System.out.println("[debug] Connexion: setIcon");
 
-		//final BufferedImage image = receivedImage.receivedImage(_in, true);
-		_in.readObject();
-		_in.readObject();
-		
-			JLabel background1 = new JLabel(new ImageIcon(Paths.get("")
-					.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"screen54.png"));
-
-		this.add(background1); 
-		this.pack();
-		this.setResizable(false);     
-		this.setVisible(true);     		}
+		BufferedImage image = receivedImage.receivedImage(_in, true);
+		JLabel background1 = new JLabel(new ImageIcon(image));
+		getContentPane().add(background1);    		
+		}
 	}
 
 }

@@ -179,6 +179,7 @@ public class Esclave {
 
 							if (remoteaction instanceof ScreenShot) 
 							{
+								System.out.println("[debug] Esclave: Reception ScreenShot par l'esclave");
 
 								ScreenShot screenshot = (ScreenShot) remoteaction;
 								Object result = screenshot.executer(_robot);
@@ -190,6 +191,7 @@ public class Esclave {
 									byte[] size = (byte[]) screenshot.getsize();
 									if (!size.equals(null)) 
 									{
+										System.out.println("[debug] Esclave: Envoit code pour un screen");
 
 										_out.writeObject(Constante.code_vnc);
 										_out.flush();
@@ -202,6 +204,8 @@ public class Esclave {
 							else 
 							{
 								Object result = remoteaction.executer(_robot);
+								System.out.println("[debug] Esclave: Reception d'un CliquerSouris ou BougerSouris par l'esclave");
+
 							}
 
 						}
