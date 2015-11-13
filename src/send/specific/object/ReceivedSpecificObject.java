@@ -19,7 +19,6 @@ public class ReceivedSpecificObject {
 				+ System.getProperty("file.separator") + "fichier"
 				+ Constante.nombredeFichierRecupere() + ".txt";
 		File file = new File(nomfichier);
-		System.out.println("LA");
 		byte[] content = (byte[]) is.readObject();
 		Files.write(file.toPath(), content);
 

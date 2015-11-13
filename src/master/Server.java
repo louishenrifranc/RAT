@@ -49,7 +49,7 @@ public class Server extends Thread {
 			ss = new ServerSocket(PORT);
 			if (ss.isClosed())
 				return;
-			Thread.sleep(1000);
+		//	Thread.sleep(1000);
 			while (true) {
 				s = ss.accept();
 				validerConnexion(s);

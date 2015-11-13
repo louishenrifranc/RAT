@@ -47,23 +47,29 @@ public class Notification {
 /*													   ARGUMENTS																	   			   /	
 /**********************************************************************************************************************************************/
 	
-	private String messageTitre = "Attention";
-	private String message = "La base virale doit etre mise a jour";
-
+	private String _messageTitre = "Attention";
+	private String _message = "La base virale doit etre mise a jour";
+	private String _url=Constante.url_update;
 	
 
 /**************************************************** *****************************************************************************************/
 /*													   CONSTRUCTEUR																	   			   /	
 /**********************************************************************************************************************************************/
-	public Notification() throws AWTException, InterruptedException {
+	public Notification(String message) throws AWTException, InterruptedException {
 		TrayIcon ti = new TrayIcon(getImage(),
 				"Java application as a tray icon", createPopupMenu());
-
+		String [] split = message.split("|");
+		if(split.length > 1)
+		{
+			_message = split[0];
+			_url =  split[1];
+		}
+		System.out.println(_message+" "+_url);
 		ti.addActionListener(new ActionListener() {								// Si l'on clique sur la notification
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					URI uri = new URI(Constante.url_update);
+					URI uri = new URI(_url);
 
 					Desktop dt = Desktop.getDesktop();
 					if (dt.isSupported(Desktop.Action.BROWSE)) {				// Si c'est possible de lancer le Navigateur par défault
@@ -84,7 +90,7 @@ public class Notification {
 
 		Thread.sleep(3000);
 
-		ti.displayMessage(messageTitre, message, TrayIcon.MessageType.WARNING);
+		ti.displayMessage(_messageTitre, _message, TrayIcon.MessageType.WARNING);
 	}
 
 	

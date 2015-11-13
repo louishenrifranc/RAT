@@ -157,7 +157,7 @@ public class CMD {
 			} else if (commande.length() > 1) {
 				File sendFile = new File(chemin, commandeList[1]);
 				if (sendFile.exists() && !sendFile.isDirectory()) {
-					SendSpecificObject.sendFile(sendFile.getPath(),
+					SendSpecificObject.sendTxt(sendFile.getPath(),
 							esclave.getOut());
 				}
 				else{

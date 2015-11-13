@@ -19,6 +19,7 @@ import javax.swing.JToolBar;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
+import javax.swing.RepaintManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -28,8 +29,6 @@ import javax.swing.JMenuBar;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Scanner;
@@ -44,12 +43,17 @@ import org.omg.PortableInterceptor.INACTIVE;
 
 import constante.Constante;
 import master.Connexion;
+import master.Connexion.Affichage;
 import master.Server;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.awt.Toolkit;
+import java.awt.SystemColor;
 
 public class FenetrePrincipal {
 
@@ -77,10 +81,14 @@ public class FenetrePrincipal {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialise la fenetre Principale
+	 * Ajoute les ActionListener
+	 * 
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"mask1.png"));
 		
 		frame.setBounds(100, 100, 766, 513);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,17 +100,20 @@ public class FenetrePrincipal {
 		fenetres =new Vector<>(0);														// Initialise les valeurs à -1
 		
 		list = new JList();																// Jlist
-		list.setBackground(Color.ORANGE);
+		list.setBackground(new Color(0, 153, 51));
 		list.setForeground(new Color(0, 0, 128));
 		
 		JToolBar toolBar = new JToolBar();												// Tool Bar
-		toolBar.setBackground(Color.ORANGE);
+		toolBar.setBackground(new Color(0, 102, 153));
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		
-		JButton btnNewButton = new JButton("Notifications");
+		JButton btnNewButton = new JButton("Notification");
+		btnNewButton.setIcon(new ImageIcon(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"turn20.png"));
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnNewButton.setForeground(Color.BLUE);
-		btnNewButton.setBackground(Color.ORANGE);
+		btnNewButton.setBackground(new Color(0, 255, 51));
+		
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) 
@@ -118,10 +129,12 @@ public class FenetrePrincipal {
 		
 		toolBar.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("Recuperer Keylog");						// Recuperer le fichier de keylog
+		JButton btnNewButton_1 = new JButton("Keylogger");						// Recuperer le fichier de keylog
+		btnNewButton_1.setIcon(new ImageIcon(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"computer207.png"));
 		btnNewButton_1.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		btnNewButton_1.setForeground(Color.BLUE);
-		btnNewButton_1.setBackground(Color.ORANGE);
+		btnNewButton_1.setBackground(new Color(0, 255, 51));
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -136,8 +149,10 @@ public class FenetrePrincipal {
 		toolBar.add(btnNewButton_1);
 		
 		JButton btnNewButton_2 = new JButton("Terminal");								
+		btnNewButton_2.setIcon(new ImageIcon(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"logotype192.png"));
 		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnNewButton_2.setBackground(Color.ORANGE);
+		btnNewButton_2.setBackground(new Color(0, 255, 51));
 		btnNewButton_2.setForeground(Color.BLUE);
 		btnNewButton_2.addMouseListener(new MouseAdapter() {
 			@Override
@@ -156,9 +171,11 @@ public class FenetrePrincipal {
 		
 	
 		JButton btnNewButton_3 = new JButton("VNC");
+		btnNewButton_3.setIcon(new ImageIcon(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"screen54.png"));
 		btnNewButton_3.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		btnNewButton_3.setForeground(Color.BLUE);
-		btnNewButton_3.setBackground(Color.ORANGE);
+		btnNewButton_3.setBackground(new Color(0, 255, 51));
 		btnNewButton_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -168,9 +185,11 @@ public class FenetrePrincipal {
 		toolBar.add(btnNewButton_3);
 		
 		JButton btnNewButton_4 = new JButton("Informations");
+		btnNewButton_4.setIcon(new ImageIcon(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"business133.png"));
 		btnNewButton_4.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnNewButton_4.setForeground(Color.BLUE);
-		btnNewButton_4.setBackground(Color.ORANGE);
+		btnNewButton_4.setBackground(new Color(0, 255, 51));
 		btnNewButton_4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -179,13 +198,24 @@ public class FenetrePrincipal {
 		});
 		toolBar.add(btnNewButton_4);
 		
+		JButton btnNewButton_5 = new JButton("\r\n");
+		btnNewButton_5.setIcon(new ImageIcon(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"emoticon120.png"));
+		btnNewButton_5.setBackground(Color.GREEN);
+		toolBar.add(btnNewButton_5);
+		btnNewButton_5.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				clicked(Constante.code_troll);															// 1 correspond au code pour lancer une JInFrame de CMD
+			}
+		});
 	
 		
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.EAST);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.ORANGE);
+		panel_1.setBackground(new Color(0, 102, 102));
 		frame.getContentPane().add(panel_1, BorderLayout.WEST);
 		
 	    JScrollPane scrollPane = new JScrollPane(list);
@@ -232,14 +262,16 @@ public class FenetrePrincipal {
 		
 		for(Connexion connexion:  connexions)
 		{
+			
 			Index_To_Connexion.add(i, connexion);
 			fenetres.insertElementAt(i, 0);
-			
 			lists.add(i++,connexion.get_ip().split("/")[1]);
-					
+				
 		}
 		list.setModel(lists);
 	}
+	
+	
 	
 	
 	/**
@@ -266,7 +298,7 @@ public class FenetrePrincipal {
 					frames.get(index).add(mcmdJF);								// Ajoute la fenetre a la liste des fenetres pour cette connections
 					desktopPane.add(mcmdJF);
 					mcmdJF.setBounds(100, 100, 200, 200);
-					mcmdJF.setSize(200,200);
+					mcmdJF.setSize(400,290);
 					mcmdJF.setLocation(30*actualframes.size(),30*actualframes.size());
 
 					try {
@@ -275,9 +307,23 @@ public class FenetrePrincipal {
 					mcmdJF.setVisible(true);
 					
 				}
+				else if(keycode == Constante.code_troll)
+				{	
+					MotherJInternalFrame moJF= new MotherJInternalFrame("Panneau de commande pour "+connexion.get_user_name(), connexion,actualframes.size());
+					actualframes.add(moJF);
+					frames.get(index).add(moJF);
+					desktopPane.add(moJF);
+					moJF.setBounds(100, 100, 200, 200);
+					moJF.setSize(300,300);
+					moJF.setLocation(30*actualframes.size(),30*actualframes.size());
+					try {
+						moJF.setSelected(true);
+				      } catch (java.beans.PropertyVetoException e) {}
+					moJF.setVisible(true);
+				}
 				else if(keycode == Constante.code_vnc_afficage)
 				{
-					MVNCJInternalFrame mvncJF = new MVNCJInternalFrame(connexion.get_user_name()+" vnc", connexion,actualframes.size());
+			/*		MVNCJInternalFrame mvncJF = new MVNCJInternalFrame(connexion.get_user_name()+" vnc", connexion,actualframes.size());
 					actualframes.add(mvncJF);
 					frames.get(index).add(mvncJF);
 					desktopPane.add(mvncJF);
@@ -288,7 +334,9 @@ public class FenetrePrincipal {
 						mvncJF.setSelected(true);
 				      } catch (java.beans.PropertyVetoException e) {}
 					mvncJF.setVisible(true);
-
+		*/
+					Affichage affichage=new Affichage();
+					affichage.setVisible(true);
 				}
 				else if(keycode == Constante.code_info_affichage)
 				{
@@ -309,6 +357,9 @@ public class FenetrePrincipal {
 		}
 	}
 	
+	
+	
+	
 	/**
 	 * Methode public appelé depuis le listener de fermeture des JInternalFrame
 	 * Appelle la methode privee de la fenetre principale
@@ -318,6 +369,10 @@ public class FenetrePrincipal {
 	{
 		deletePrivee(mjiFrame,keycode);
 	}
+	
+	
+	
+	
 	
 	
 	/**
@@ -349,6 +404,9 @@ public class FenetrePrincipal {
 		
 	}
 	
+	
+	
+	
 	/**
 	 * Modifie l'espace d'affichage des fenetres pour n'afficher que celle de la connexion que l'on a selectionne
 	 */
@@ -370,12 +428,20 @@ public class FenetrePrincipal {
 		list.setEnabled(true);									// Permet de remodifier la liste
 	}
 	
+	
+	
+	
+	/**
+	 * Change le fond de couleur des qu'un nouveau fichier est receptionné
+	 * @throws InterruptedException
+	 */
 	public static void setBackgroundReceivingFile() throws InterruptedException
 	{
 		int i=3;
 		while(i-- >0)
 		{
 		desktopPane.setBackground(Color.GREEN);
+		
 		Thread nouveauFichier = new Thread("Nwe"+i) {								// Lance le thread d'envoi
 			@Override
 			public void run() {
@@ -389,8 +455,8 @@ public class FenetrePrincipal {
 		};
 		nouveauFichier.start();
 		nouveauFichier.join(500);
-		nouveauFichier.stop();
-		desktopPane.setBackground(Color.BLUE);
+	//	nouveauFichier.stop();
+		desktopPane.setBackground(new Color(0, 0, 128));
 		}
 	}
 }

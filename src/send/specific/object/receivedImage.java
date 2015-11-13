@@ -16,16 +16,18 @@ public class receivedImage {
 		byte[] sizeIm = new byte[4];
 
 		sizeIm = (byte[]) ois.readObject();
+		System.out.println("recoit taille");
 		int size = ByteBuffer.wrap(sizeIm).asIntBuffer().get();
 		byte[] imageIm = new byte[size];
 
 		imageIm = (byte[]) ois.readObject();
 		final BufferedImage image = ImageIO.read(new ByteArrayInputStream(
 				imageIm));
-
+		System.out.println("Nouvelle image enregistre");
+		
 		if (sauvegarde) {
 			File outputfile = new File(Paths.get("").toAbsolutePath()
-
+			
 			.toString() + File.separator + "saved.png");
 			ImageIO.write(image, "png", outputfile);
 
