@@ -4,7 +4,7 @@ import java.awt.Robot;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
-public class ClickerSouris implements RemoteActions {
+public class ClickerSouris implements ActionVNC {
 
 	/**
 	 * 

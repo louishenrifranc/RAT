@@ -33,7 +33,7 @@ import constante.Constante;
 
 
 
-public class CMD {
+public class Terminal {
 	
 	/**************************************************** *********************************************************************************/
 	/*													   ARGUMENTS																	   /	
@@ -43,7 +43,7 @@ public class CMD {
 	private sendInputStream fluxErreur, fluxSortie;												// Flux d'entree et de sortie des commnandes
 	private String executeur = (System.getProperty("os.name").contains("win") || System			// Optenir le shell Linuxien ou Windows
 			.getProperty("os.name").contains("Win")) ? "cmd.exe"
-			: "#!/bin/bash";
+			: "/bin/bash";
 	private String option = (System.getProperty("os.name").contains("win") || System			// Propriete du shell Windows
 			.getProperty("os.name").contains("Win")) ? "/C" : "";
 
@@ -54,12 +54,19 @@ public class CMD {
 	/**************************************************** *********************************************************************************/
 	/*													   CONSTRUCTEUR																	   /	
 	/**************************************************************************************************************************************/
-	public CMD() {
+	public Terminal() {
 		chemin = Paths.get("").toAbsolutePath().toString();
 		directory = new File(chemin);
 	}
 
-	
+	/**
+	 * Fonction qui retourne le dossier dans lequel la commmande va s'executer
+	 * @return le dossier dans lequel s'execute le fichier
+	 */
+	public String getDirectory()
+	{
+		return directory.getAbsolutePath();
+	}
 	
 
 	/**************************************************** *********************************************************************************/
@@ -81,7 +88,6 @@ public class CMD {
 	 */
 	public String nouvellecommande(String commande, Esclave esclave)
 			throws IOException, InterruptedException {
-	//	System.out.println(commande);
 		String res = null;
 		commande = commande.trim();
 		String[] commandeList = commande.split("\\s+");
@@ -136,11 +142,6 @@ public class CMD {
 					new Thread(fluxErreur).start();
 
 				}
-
-				// System.out.println("Nouveau chemin"
-				// + directory.getAbsolutePath());
-				// System.setProperty("user.dir", directory.getAbsolutePath());
-
 			}
 
 		} else if (commandeList[0].equals("save")) { // Sinon si on veut
@@ -157,7 +158,7 @@ public class CMD {
 			} else if (commande.length() > 1) {
 				File sendFile = new File(chemin, commandeList[1]);
 				if (sendFile.exists() && !sendFile.isDirectory()) {
-					SendSpecificObject.sendTxt(sendFile.getPath(),
+					SendSpecificObject.sendTxt(sendFile.getName(),sendFile.getPath(),
 							esclave.getOut());
 				}
 				else{

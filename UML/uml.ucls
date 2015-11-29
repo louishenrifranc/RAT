@@ -55,16 +55,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="remote.action.CMD" project="RAT2015" file="/RAT2015/src/remote/action/CMD.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="859" y="228"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="8" language="java" name="remote.action.Keylogging" project="RAT2015" 
+  <class id="7" language="java" name="remote.action.Keylogging" project="RAT2015" 
     file="/RAT2015/src/remote/action/Keylogging.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="843" y="500"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -73,7 +64,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="remote.action.Notification" project="RAT2015" 
+  <class id="8" language="java" name="remote.action.Notification" project="RAT2015" 
     file="/RAT2015/src/remote/action/Notification.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="153" width="180" x="742" y="-157"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -82,7 +73,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="10" language="java" name="remote.action.RemoteActions" project="RAT2015" 
+  <interface id="9" language="java" name="remote.action.RemoteActions" project="RAT2015" 
     file="/RAT2015/src/remote/action/RemoteActions.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="432" y="467"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -91,7 +82,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="11" language="java" name="remote.action.ScreenShot" project="RAT2015" 
+  <class id="10" language="java" name="remote.action.ScreenShot" project="RAT2015" 
     file="/RAT2015/src/remote/action/ScreenShot.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="647" y="671"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -100,7 +91,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="12" language="java" name="send.specific.object.sendInputStream" project="RAT2015" 
+  <class id="11" language="java" name="send.specific.object.sendInputStream" project="RAT2015" 
     file="/RAT2015/src/send/specific/object/sendInputStream.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1160" y="283"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -109,7 +100,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="13" language="java" name="send.specific.object.SendSpecificObject" project="RAT2015" 
+  <class id="12" language="java" name="send.specific.object.SendSpecificObject" project="RAT2015" 
     file="/RAT2015/src/send/specific/object/SendSpecificObject.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1060" y="45"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -118,7 +109,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="14" language="java" name="master.Compte" project="RAT2015" file="/RAT2015/src/master/Compte.java" 
+  <class id="13" language="java" name="master.Compte" project="RAT2015" file="/RAT2015/src/master/Compte.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="-13" y="52"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -127,194 +118,146 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <dependency id="15">    
+  <dependency id="14">    
     <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="13"/>  
+    <end type="TARGET" refId="8"/>  
   </dependency>  
-  <association id="16">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="17" name="_klgg">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="18" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency id="19">    
+  <nesting id="15">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="6"/>  
+  </nesting>  
+  <dependency id="16">    
     <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="3"/>  
+    <end type="TARGET" refId="9"/>  
   </dependency>  
-  <dependency id="20">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <realization id="21">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="10"/>  
+  <realization id="17">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="9"/>  
   </realization>  
-  <association id="22">    
-    <end type="SOURCE" refId="14" navigable="false">      
-      <attribute id="23" name="_listConnexion">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="24" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="25">    
+  <association id="18">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="26" name="_affichage">        
+      <attribute id="19" name="_affichage">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="27" minimum="0" maximum="1">        
+      <multiplicity id="20" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="28">    
+  <association id="21">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="29" name="_esclave">        
+      <attribute id="22" name="_esclave">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="30" minimum="0" maximum="1">        
+      <multiplicity id="23" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="31">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="32" name="fluxErreur">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="33" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="12" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="34">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="35" name="_affichage">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="36" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency id="37">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="13"/>  
-  </dependency>  
-  <dependency id="38">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="1"/>  
-  </dependency>  
-  <dependency id="39">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="11"/>  
-  </dependency>  
-  <dependency id="40">    
+  <dependency id="24">    
     <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="11"/>  
+    <end type="TARGET" refId="10"/>  
   </dependency>  
-  <association id="41">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="42" name="_remoteActionsQueue">        
-        <position height="0" width="0" x="0" y="0"/>      
+  <realization id="25">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="9"/>  
+  </realization>  
+  <dependency id="26">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <association id="28">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="29" name="compteActuel">        
+        <position height="0" width="0" x="13" y="124"/>      
       </attribute>      
-      <multiplicity id="43" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <multiplicity id="30" minimum="0" maximum="1">        
+        <position height="0" width="0" x="13" y="124"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
+    <end type="TARGET" refId="13" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="44">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="10"/>  
-  </realization>  
-  <association id="45">    
+  <dependency id="31">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="32">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <association id="33">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="46" name="_cmd">        
+      <attribute id="34" name="_klgg">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="47" minimum="0" maximum="1">        
+      <multiplicity id="35" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="48">    
+  <association id="36">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="37" name="_remoteActionsQueue">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="39">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <dependency id="40">    
     <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <association id="41">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="42" name="_affichage">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="43" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="44">    
+    <end type="SOURCE" refId="10"/>    
     <end type="TARGET" refId="9"/>  
-  </dependency>  
-  <association id="49">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="50" name="compteActuel">        
-        <position height="0" width="0" x="13" y="124"/>      
-      </attribute>      
-      <multiplicity id="51" minimum="0" maximum="1">        
-        <position height="0" width="0" x="13" y="124"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="14" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency id="52">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <dependency id="53">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="10"/>  
-  </dependency>  
-  <dependency id="54">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <realization id="55">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="10"/>  
   </realization>  
-  <nesting id="56">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="6"/>  
-  </nesting>  
-  <dependency id="57">    
-    <end type="SOURCE" refId="14"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <dependency id="58">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="10"/>  
-  </dependency>  
-  <association id="59">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="60" name="fluxSortie">        
+  <association id="45">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="46" name="_listConnexion">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="61" minimum="0" maximum="1">        
+      <multiplicity id="47" minimum="0" maximum="2147483647">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="12" navigable="true"/>    
+    <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <dependency id="48">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    

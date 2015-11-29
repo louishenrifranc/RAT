@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 
-public interface RemoteActions extends Serializable {
+public interface ActionVNC extends Serializable {
 
 	Object executer(Robot robot) throws IOException;
 

@@ -55,6 +55,12 @@ public class Notification {
 /**************************************************** *****************************************************************************************/
 /*													   CONSTRUCTEUR																	   			   /	
 /**********************************************************************************************************************************************/
+	/**
+	 * Methode qui permet de lancer une notification sur un ordinateur 
+	 * @param message		: le message a envoyer
+	 * @throws AWTException
+	 * @throws InterruptedException
+	 */
 	public Notification(String message) throws AWTException, InterruptedException {
 		TrayIcon ti = new TrayIcon(getImage(),
 				"Java application as a tray icon", createPopupMenu());

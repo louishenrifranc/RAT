@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
 
-import client.Esclave;
 import de.ksquared.system.keyboard.GlobalKeyListener;
 import de.ksquared.system.keyboard.KeyListener;
 

@@ -7,7 +7,11 @@ import java.util.Scanner;
 import java.util.Vector;
 
 import loggingSystem.Log;
-
+/**
+ * Classe Main
+ * @author lh
+ *
+ */
 public class Server extends Thread {
 
 	private static final int PORT = 443;
@@ -15,14 +19,14 @@ public class Server extends Thread {
 	private ServerSocket ss;
 	private static Compte compteActuel;
 	public static Log log;
-
+	
 	public Server() {
 		log = new Log();
 		initialiserCompte();
 		listSocket = new Vector<Socket>();
 
 	}
-
+	
 	private boolean validerConnexion(Socket s) throws ClassNotFoundException,
 			IOException {
 		if (compteActuel.ajouterSocket(s))
@@ -33,7 +37,7 @@ public class Server extends Thread {
 	public void initialiserCompte() {
 		String compte;
 		Scanner sc = new Scanner(System.in);
-		compte = sc.next();
+		compte = "buboub";
 		log.enregistrerFichier("********************** Nouveau Compte :"
 				+ compte);
 		compteActuel = new Compte(compte); /*
@@ -44,7 +48,7 @@ public class Server extends Thread {
 
 	@Override
 	public void run() {
-		Socket s;
+		Socket s = null;
 		try {
 			ss = new ServerSocket(PORT);
 			if (ss.isClosed())
@@ -55,7 +59,7 @@ public class Server extends Thread {
 				validerConnexion(s);
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 

@@ -4,7 +4,7 @@ import java.awt.Robot;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
-public class BougerSouris implements RemoteActions {
+public class BougerSouris implements ActionVNC {
 
 	/**********************************************************************************************************************************************/
 	/*													   ARGUMENT																	   			   /	

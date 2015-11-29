@@ -2,16 +2,14 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
@@ -19,8 +17,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
-
-import com.jgoodies.forms.layout.FormLayout;
 
 import master.Connexion;
 
@@ -34,7 +30,6 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 	private JTextArea _jTextArea;
 	private JTextField _jTextField;
 	private JPanel _jpanelFille;
-
 	public MCmdJInternalFrame(String title, int nframe,
 			final Connexion connexion) {
 		super(title, connexion, nframe);
@@ -46,16 +41,20 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 		_jTextArea.setBackground(Color.BLACK);
 		_jTextField.setForeground(Color.green);
 		_jTextField.setBackground(Color.BLACK);
+
+		setBackground(Color.black);
 		
+		Font font1 = new Font("SansSerif", Font.BOLD, 10);
+		_jTextArea.setFont(font1);
 		setContentPane(_jpanelFille);
 		getContentPane().setLayout(new BorderLayout());							// Ajoute une barre de Scroll
 		JScrollPane scrollpane=new JScrollPane(_jTextArea);					
 		
 		getContentPane().add(scrollpane, BorderLayout.NORTH);
 		getContentPane().add(_jTextField, BorderLayout.SOUTH);
-		
+		_jTextArea.setEditable(false);
 		_jTextField.addActionListener(new AbstractAction() {					// Action Listener quand j'appuie sur Enter
-
+		
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String line = _jTextField.getText();
@@ -74,6 +73,8 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 	 */
 	public void append(String s) { // better implementation--uses					
 		// StyleContext
+		_jTextArea.setEditable(true);
+
 		StyleContext sc = StyleContext.getDefaultStyleContext();
 	
 		AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY,
@@ -85,6 +86,8 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 		_jTextArea.replaceSelection(s); 
 		DefaultCaret caret = (DefaultCaret) _jTextArea.getCaret();
 		  caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+			_jTextArea.setEditable(false);
+		
 	}
 
 	/**

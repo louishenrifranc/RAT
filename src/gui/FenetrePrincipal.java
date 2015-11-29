@@ -1,70 +1,48 @@
 package gui;
 
-import java.awt.EventQueue;
-
-import javax.imageio.ImageIO;
-import javax.print.attribute.standard.Sides;
-import javax.swing.JFrame;
-
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
+import javax.swing.JButton;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JComboBox;
-import javax.swing.RepaintManager;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import javax.swing.JDesktopPane;
-import javax.swing.JMenuBar;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.Scanner;
-import java.util.Vector;
-import java.util.concurrent.locks.AbstractQueuedLongSynchronizer.ConditionObject;
-
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.ActionMapUIResource;
 
-import org.omg.PortableInterceptor.INACTIVE;
-
-import constante.Constante;
 import master.Connexion;
 import master.Connexion.Affichage;
-import master.Server;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.awt.Toolkit;
-import java.awt.SystemColor;
-
+import constante.Constante;
+/**
+ * GUI pour le Maitre, gère une liste de connexions, gère les cliques sur les boutons et se charge de les envoyer au controle (connexion)
+ * Correspond au modèle dans le schéma MVC
+ * @author lh
+ *
+ */
 public class FenetrePrincipal {
 
 	private JFrame frame;
 	private Vector<Connexion> Index_To_Connexion;  				// Passer d'un index dans la liste a la connection
-	private static Vector<Vector<MJInternalFrame>> frames ;			// InternalFrame pour toutes les connexions
-	private static Vector<MJInternalFrame> actualframes;				// InternalFrame actuellement a l'ecran
-	private static Vector<Integer> fenetres ;							// Pour chaque connection quelle fenetre a été choisie
-	
-	private static JList<String> list;
-	private static JDesktopPane desktopPane ;
+	private Vector<Vector<MJInternalFrame>> frames ;			// InternalFrame pour toutes les connexions
+	private Vector<MJInternalFrame> actualframes;				// InternalFrame actuellement a l'ecran
+	private Vector<Integer> fenetres ;							// Pour chaque connection quelle fenetre a été choisie
+	private JToolBar toolBar;									
+	private  JList<String> list;
+	private JDesktopPane desktopPane ;
+	private Boolean modifiable;
 	/**
 	 * Launch the application.
 	 */
@@ -76,8 +54,7 @@ public class FenetrePrincipal {
 	public FenetrePrincipal() {
 		initialize();
 		this.frame.setVisible(true);
-		
-		
+		modifiable=true;		
 	}
 
 	/**
@@ -85,7 +62,7 @@ public class FenetrePrincipal {
 	 * Ajoute les ActionListener
 	 * 
 	 */
-	private void initialize() {
+	private synchronized void initialize() {
 		frame = new JFrame();
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
 				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"mask1.png"));
@@ -103,7 +80,7 @@ public class FenetrePrincipal {
 		list.setBackground(new Color(0, 153, 51));
 		list.setForeground(new Color(0, 0, 128));
 		
-		JToolBar toolBar = new JToolBar();												// Tool Bar
+		toolBar = new JToolBar();												// Tool Bar
 		toolBar.setBackground(new Color(0, 102, 153));
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		
@@ -198,7 +175,7 @@ public class FenetrePrincipal {
 		});
 		toolBar.add(btnNewButton_4);
 		
-		JButton btnNewButton_5 = new JButton("\r\n");
+		JButton btnNewButton_5 = new JButton("\r\n");					
 		btnNewButton_5.setIcon(new ImageIcon(Paths.get("")
 				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"emoticon120.png"));
 		btnNewButton_5.setBackground(Color.GREEN);
@@ -211,6 +188,18 @@ public class FenetrePrincipal {
 		});
 	
 		
+		JButton btnNewButton_6 = new JButton("Envoyer");
+		btnNewButton_6.setIcon(new ImageIcon(Paths.get("")
+				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"tray33.png"));
+		btnNewButton_6.setBackground(Color.GREEN);
+		toolBar.add(btnNewButton_6);
+		btnNewButton_6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				clicked(Constante.code_envoyer);															// 1 correspond au code pour lancer une JInFrame de CMD
+			}
+		});
+		
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.EAST);
 		
@@ -222,9 +211,26 @@ public class FenetrePrincipal {
 		panel_1.add(scrollPane);
 		
 		 ListSelectionListener listSelectionListener = new ListSelectionListener() {	// Listener des que l'on change de connexions
-		      public void valueChanged(ListSelectionEvent listSelectionEvent) {
+		      public void valueChanged(ListSelectionEvent listSelectionEvent) {			// Lance un Thread dans le cas de la fermeture d'une conection
+		    	  																		// En effet il faut attendre la fin de la mise a jour de la Jlist
+		    	  																		// Avant de vouloir changer de Workspace
 		    	  list.setEnabled(false);
-		    	  changeWorkspace();
+		    	  Thread attendre=new Thread(){
+		    		  public void run()
+		    		  {
+		    			  while(!modifiable){
+		    				  try {
+								Thread.sleep(100);
+								this.join();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+		    			  }
+		 		    	 if(modifiable) changeWorkspace();
+		    		  }
+		    	  }; 
+		    	  attendre.start();
 		      }
 		 };
 		 list.addListSelectionListener(listSelectionListener);
@@ -244,41 +250,54 @@ public class FenetrePrincipal {
 	 * Recupere l'index de l'element choisi dans la liste des connexions choisis
 	 * @return
 	 */
-	private static int getSelectedIndex()
+	private int getSelectedIndex()
 	{
 		return list.getSelectedIndex();
 	}
+	
+	
 
 	
 	/**
 	 * Modifie la liste actuelle des connexions possibles
 	 * @param connexions
 	 */
-	public void setJlist(Vector<Connexion> connexions)
+	public synchronized void setJlist(Vector<Connexion> connexions)
 	{
+		modifiable=false;
 		Index_To_Connexion.clear();
 		DefaultListModel<String> lists=new DefaultListModel<>();
 		int i=0;
-		
+		list.setSelectedIndex(-1);
 		for(Connexion connexion:  connexions)
 		{
-			
 			Index_To_Connexion.add(i, connexion);
 			fenetres.insertElementAt(i, 0);
 			lists.add(i++,connexion.get_ip().split("/")[1]);
 				
 		}
-		list.setModel(lists);
+		list.setSelectedIndex(0);
+		modifiable=true;
+		list.setModel(lists);	
 	}
 	
 	
+	/**
+	 * Recupere la liste des MJInternalFrame ouverte pour la connection co
+	 * @param co : la connection en question
+	 * @return
+	 */
+	public Vector<MJInternalFrame> getFrameIndexConnection(Connexion co)
+	{
+		Vector<MJInternalFrame> x=frames.get(Index_To_Connexion.indexOf(co));
+		return x;
+	}
 	
 	
 	/**
 	 * Est appele par les MouseClicked avec un code particulier
-	 * Verifie si une nouvelle fenetre doit etre afficher
-	 *
-	 * @param keycode
+	 * Ouvre une nouvelle fenetre suivant le code, verifie qu'elle n'est pas déja ouverte et que l'on a bien séléctionné une connexion
+	 * @param keycode : code indiquant quelle type de fenetre doit etre ouvert
 	 */
 	private void clicked(int keycode)
 	{
@@ -321,20 +340,23 @@ public class FenetrePrincipal {
 				      } catch (java.beans.PropertyVetoException e) {}
 					moJF.setVisible(true);
 				}
+				else if(keycode == Constante.code_envoyer)
+				{
+						MFileInternalFrame mFJF =new MFileInternalFrame("Envoyer Fichier"+ connexion.get_user_name(), connexion,actualframes.size());
+						actualframes.add(mFJF);
+						frames.get(index).add(mFJF);
+						desktopPane.add(mFJF);
+						mFJF.setBounds(100, 100, 200, 200);
+						mFJF.setSize(300,300);
+						mFJF.setLocation(30*actualframes.size(),30*actualframes.size());
+						try {
+							mFJF.setSelected(true);
+					      } catch (java.beans.PropertyVetoException e) {}
+						mFJF.setVisible(true);
+				}
 				else if(keycode == Constante.code_vnc_afficage)
 				{
-			/*		MVNCJInternalFrame mvncJF = new MVNCJInternalFrame(connexion.get_user_name()+" vnc", connexion,actualframes.size());
-					actualframes.add(mvncJF);
-					frames.get(index).add(mvncJF);
-					desktopPane.add(mvncJF);
-					mvncJF.setBounds(100, 100, 200, 200);
-					mvncJF.setSize(300,300);
-					mvncJF.setLocation(30*actualframes.size(),30*actualframes.size());
-					try {
-						mvncJF.setSelected(true);
-				      } catch (java.beans.PropertyVetoException e) {}
-					mvncJF.setVisible(true);
-		*/
+
 					Affichage affichage=new Affichage();
 					affichage.setVisible(true);
 				}
@@ -354,6 +376,14 @@ public class FenetrePrincipal {
 				}
 				fenetres.set(index,fenetres.get(index)+ (1 << keycode));		// Indique que l'on ne peut plus creer de nouvelles fenetres pour ce type maintenant
 			}
+			else{
+				try {
+					Addinformation("FENETRE DEJA EXISTENTE");
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
@@ -365,7 +395,7 @@ public class FenetrePrincipal {
 	 * Appelle la methode privee de la fenetre principale
 	 * @param mjiFrame
 	 */
-	public static void deletePublic(MJInternalFrame mjiFrame,int keycode)
+	public void deletePublic(MJInternalFrame mjiFrame,int keycode)
 	{
 		deletePrivee(mjiFrame,keycode);
 	}
@@ -379,7 +409,7 @@ public class FenetrePrincipal {
 	 * Supprime la JInternalFrame fermé par l'utilisateur
 	 * @param mjiFrame
 	 */
-	private static void deletePrivee(MJInternalFrame mjiFrame,int keycode)
+	private  void deletePrivee(MJInternalFrame mjiFrame,int keycode)
 	{
 		if(actualframes.contains(mjiFrame))											// Supprime de la liste des fenetres affichés a l'ecrans
 		{
@@ -394,7 +424,7 @@ public class FenetrePrincipal {
 			{
 				frames.get(index).removeElement(mjiFrame);							// Supprime de la liste des fenetres de la connexion actuelle affichée
 			}
-			if(!fenetres.isEmpty())
+			if(!fenetres.isEmpty() && keycode != -1)
 			{
 				fenetres.set(index, fenetres.get(index)- (1 << keycode));			// Enleve le code qui empechait d'en creer une nouvelle
 			}
@@ -408,10 +438,11 @@ public class FenetrePrincipal {
 	
 	
 	/**
-	 * Modifie l'espace d'affichage des fenetres pour n'afficher que celle de la connexion que l'on a selectionne
+	 * Modifie les fenetres actuellement affichées pour que si l'on change de connexion, cela change aussi le workspace
 	 */
-	private void changeWorkspace()
+	private synchronized void changeWorkspace()
 	{
+		
 		for(MJInternalFrame frame : actualframes)
 		{
 			frame.setVisible(false);							// Masque les frames de l'ancien espace de travail
@@ -419,7 +450,7 @@ public class FenetrePrincipal {
 		int index = getSelectedIndex();							// Recupere le nouvel index
 		actualframes.clear();
 		
-		if(index != 0)
+		if(index != -1)
 		{
 			Connexion connexion = Index_To_Connexion.elementAt(index);
 			if(connexion.get_os_name().contains("Win") || connexion.get_os_name().contains("win"))
@@ -433,7 +464,7 @@ public class FenetrePrincipal {
 						.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"logo27.png"));
 			}
 		}
-		for(int i=0;i<frames.get(index).size();i++)
+		for(int i=0;i<frames.get((index == -1 ) ? 0 : index).size();i++)
 		{
 			if( index  == -1 || frames.get(index).isEmpty()) break;	// Si pas d'indice selectionné ou pas de fenetres active pour la connexion
 			frames.get(index).get(i).setVisible(true);			// Affiche les nouvelles fenetres
@@ -446,31 +477,31 @@ public class FenetrePrincipal {
 	
 	
 	/**
-	 * Change le fond de couleur des qu'un nouveau fichier est receptionné
+	 * Affiche un label/ bouton dès que un nouveau fichier est recu
 	 * @throws InterruptedException
 	 */
-	public static void setBackgroundReceivingFile() throws InterruptedException
+	public void Addinformation(String info) throws InterruptedException
 	{
-		int i=3;
-		while(i-- >0)
-		{
-		desktopPane.setBackground(Color.GREEN);
 		
-		Thread nouveauFichier = new Thread("Nwe"+i) {								// Lance le thread d'envoi
+		final JButton button = new JButton(info);
+		button.setFont(new Font("Courrier", Font.BOLD, 11));
+		button.setForeground(Color.RED);
+		button.setBackground(Color.YELLOW);
+		button.setVisible(true);
+		button.setEnabled(false);
+		toolBar.add(button);
+		Thread information = new Thread() {								// Lance le thread d'envoi
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(5000);
+					button.setVisible(false);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				}
 		};
-		nouveauFichier.start();
-		nouveauFichier.join(500);
-	//	nouveauFichier.stop();
-		desktopPane.setBackground(new Color(0, 0, 128));
-		}
+		information.start();			
+		
 	}
 }

