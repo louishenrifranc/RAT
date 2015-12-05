@@ -43,16 +43,37 @@ import constante.Constante;
 public class Notification {
 	
 
-/**************************************************** *****************************************************************************************/
-/*													   ARGUMENTS																	   			   /	
-/**********************************************************************************************************************************************/
-	
-	private String _messageTitre = "Attention";
+private static PopupMenu createPopupMenu() throws HeadlessException {
+	PopupMenu menu = new PopupMenu();
+
+	MenuItem exit = new MenuItem("Exit");
+	exit.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+	});
+	menu.add(exit);
+
+	return menu;
+}
 	private String _message = "La base virale doit etre mise a jour";
-	private String _url=Constante.url_update;
+	/**************************************************** *****************************************************************************************/
+	/*													   ARGUMENTS																	   			   /	
+	/**********************************************************************************************************************************************/
+		
+		private String _messageTitre = "Attention";
+	
+
+private String _url=Constante.url_update;
+
 	
 
 /**************************************************** *****************************************************************************************/
+/*													   METHODES																	   			   /	
+/**********************************************************************************************************************************************/
+	
+	/**************************************************** *****************************************************************************************/
 /*													   CONSTRUCTEUR																	   			   /	
 /**********************************************************************************************************************************************/
 	/**
@@ -100,10 +121,12 @@ public class Notification {
 	}
 
 	
-
-/**************************************************** *****************************************************************************************/
-/*													   METHODES																	   			   /	
-/**********************************************************************************************************************************************/
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Forgage de l'icone de la fenetre
@@ -116,28 +139,5 @@ public class Notification {
 				defaultIcon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		defaultIcon.paintIcon(new Panel(), img.getGraphics(), 0, 0);
 		return img;
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	private static PopupMenu createPopupMenu() throws HeadlessException {
-		PopupMenu menu = new PopupMenu();
-
-		MenuItem exit = new MenuItem("Exit");
-		exit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-		menu.add(exit);
-
-		return menu;
 	}
 }

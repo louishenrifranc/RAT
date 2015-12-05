@@ -14,24 +14,22 @@ import loggingSystem.Log;
  */
 public class Server extends Thread {
 
-	private static final int PORT = 443;
-	private Vector<Socket> listSocket;
-	private ServerSocket ss;
 	private static Compte compteActuel;
 	public static Log log;
+	private static final int PORT = 443;
+	public static void main(String args[]) {
+		Server server = new Server();
+		server.run();
+	}
+	private Vector<Socket> listSocket;
+	
+	private ServerSocket ss;
 	
 	public Server() {
 		log = new Log();
 		initialiserCompte();
 		listSocket = new Vector<Socket>();
 
-	}
-	
-	private boolean validerConnexion(Socket s) throws ClassNotFoundException,
-			IOException {
-		if (compteActuel.ajouterSocket(s))
-			listSocket.addElement(s);
-		return true;
 	}
 
 	public void initialiserCompte() {
@@ -63,9 +61,11 @@ public class Server extends Thread {
 		}
 	}
 
-	public static void main(String args[]) {
-		Server server = new Server();
-		server.run();
+	private boolean validerConnexion(Socket s) throws ClassNotFoundException,
+			IOException {
+		if (compteActuel.ajouterSocket(s))
+			listSocket.addElement(s);
+		return true;
 	}
 
 }

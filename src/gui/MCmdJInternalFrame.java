@@ -27,9 +27,9 @@ import master.Connexion;
  *
  */
 public class MCmdJInternalFrame extends MJInternalFrame {
+	private JPanel _jpanelFille;
 	private JTextArea _jTextArea;
 	private JTextField _jTextField;
-	private JPanel _jpanelFille;
 	public MCmdJInternalFrame(String title, int nframe,
 			final Connexion connexion) {
 		super(title, connexion, nframe);
@@ -68,6 +68,16 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 
 	
 	/**
+	 * Fonction obsolete
+	 * @param string
+	 * @throws BadLocationException
+	 */
+	public void add(String string) throws BadLocationException {
+		StyledDocument sd = (StyledDocument) _jTextArea.getDocument();
+		sd.insertString(sd.getLength(), string, null);
+	}
+
+	/**
 	 * Fonction qui ajoute a la "fenetre" de CMD une chaine de caractere
 	 * @param s :  la chaine a ajouté
 	 */
@@ -88,16 +98,6 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 		  caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 			_jTextArea.setEditable(false);
 		
-	}
-
-	/**
-	 * Fonction obsolete
-	 * @param string
-	 * @throws BadLocationException
-	 */
-	public void add(String string) throws BadLocationException {
-		StyledDocument sd = (StyledDocument) _jTextArea.getDocument();
-		sd.insertString(sd.getLength(), string, null);
 	}
 
 }

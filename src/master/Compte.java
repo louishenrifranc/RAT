@@ -11,8 +11,8 @@ import java.util.Vector;
 
 public class Compte implements Serializable {
 
-	private static final long serialVersionUID = 1L;
 	private static int COMPTENUMERO = 1;
+	private static final long serialVersionUID = 1L;
 	private Vector<Connexion> _listConnexion; // Liste des connexions auquel le
 												// compte a accès
 	private String _nomCompte; // Nom Compte
@@ -62,6 +62,15 @@ public class Compte implements Serializable {
 	}
 
 	
+	public FenetrePrincipal getFenetrePrincipale()
+	{
+		return fp;
+	}
+	
+	public Vector<Connexion> getListConnexion() {
+		return _listConnexion;
+	}
+	
 	/**
 	 * Methode appelé par une connection quand la connection est interrompu avec l'esclave
 	 * Le compte supprime la connection et se charge d'envoyer les informations au modèle
@@ -87,14 +96,5 @@ public class Compte implements Serializable {
 			}
 		}
 		fp.setJlist(_listConnexion);											// Met a jour la JList
-	}
-	
-	public Vector<Connexion> getListConnexion() {
-		return _listConnexion;
-	}
-	
-	public FenetrePrincipal getFenetrePrincipale()
-	{
-		return fp;
 	}
 }

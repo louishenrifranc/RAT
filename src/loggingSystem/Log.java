@@ -20,13 +20,13 @@ public class Log {
 /**********************************************************************************************************************************************/
 	private static Path cheminactuel = Paths.get("");
 
+	private static File file;
 	private static final String nomfichier = cheminactuel.toAbsolutePath()
 			.toString()
 			+ System.getProperty("file.separator")
 			+ "Log"
 			+ System.getProperty("file.separator") + "log.txt";
 	private static PrintWriter pw;
-	private static File file;
 
 /**********************************************************************************************************************************************/
 /*													   CONSTRUCTEUR																	   			   /	

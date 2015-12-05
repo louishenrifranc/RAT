@@ -40,10 +40,10 @@ public class Terminal {
 	/**************************************************************************************************************************************/
 	private String chemin;
 	private File directory;
-	private sendInputStream fluxErreur, fluxSortie;												// Flux d'entree et de sortie des commnandes
 	private String executeur = (System.getProperty("os.name").contains("win") || System			// Optenir le shell Linuxien ou Windows
 			.getProperty("os.name").contains("Win")) ? "cmd.exe"
 			: "/bin/bash";
+	private sendInputStream fluxErreur, fluxSortie;												// Flux d'entree et de sortie des commnandes
 	private String option = (System.getProperty("os.name").contains("win") || System			// Propriete du shell Windows
 			.getProperty("os.name").contains("Win")) ? "/C" : "";
 

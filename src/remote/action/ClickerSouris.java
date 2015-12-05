@@ -6,12 +6,12 @@ import java.io.IOException;
 
 public class ClickerSouris implements ActionVNC {
 
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 
 	 */
 	private final int Bouton;
 	private final int click;
-	private static final long serialVersionUID = 1L;
 
 	public ClickerSouris(int bouton, int click) {
 		super();

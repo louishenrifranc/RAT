@@ -21,11 +21,14 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class FenetreConnexion extends JDialog {
 
-	private final JPanel contentPanel = new JPanel();
-	private JPasswordField passwordField;
-	private JTextField textField;
-	private final Action action = new SwingAction();
-
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
+	}
 	/**
 	 * Launch the application.
 	 */
@@ -38,6 +41,12 @@ public class FenetreConnexion extends JDialog {
 			e.printStackTrace();
 		}
 	}
+	private final Action action = new SwingAction();
+	private final JPanel contentPanel = new JPanel();
+
+	private JPasswordField passwordField;
+
+	private JTextField textField;
 
 	/**
 	 * Create the dialog.
@@ -112,15 +121,6 @@ public class FenetreConnexion extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
-		}
-	}
-
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
 		}
 	}
 }

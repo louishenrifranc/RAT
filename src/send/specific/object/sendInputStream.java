@@ -13,8 +13,8 @@ import java.io.InputStreamReader;
  */
 public class sendInputStream implements Runnable {
 
-	private final InputStream inputStream;
 	private String finale;
+	private final InputStream inputStream;
 
 	public sendInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -22,6 +22,10 @@ public class sendInputStream implements Runnable {
 
 	private BufferedReader getBufferedReader(InputStream is) {
 		return new BufferedReader(new InputStreamReader(is));
+	}
+
+	public String getFinale() {
+		return this.finale;
 	}
 
 	@Override
@@ -37,9 +41,5 @@ public class sendInputStream implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public String getFinale() {
-		return this.finale;
 	}
 }
