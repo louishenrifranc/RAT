@@ -1,15 +1,3 @@
-/*
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- */
 package remote.action;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,7 +15,7 @@ import constante.Constante;
 /**
  * 		Classe qui se charge d'envoyer une commande au systeme d'exploitation a travers le terminal de type console de l'esclave.
  * 		Implemente des fonctions qui recupere les flux de sorties et les flux d'erreurs des 
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 

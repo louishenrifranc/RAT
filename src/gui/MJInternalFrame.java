@@ -11,6 +11,12 @@ import javax.swing.JPanel;
 import master.Connexion;
 import constante.Constante;
 
+/**
+ * Classe Héritant de JinternalFrame a laquel on a rajouté un Listener qui permet de demander verification
+ * lorsqu'on ferme la fenetre.
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
+ */
+
 public class MJInternalFrame extends JInternalFrame implements
 		VetoableChangeListener {
 	protected Connexion _connexion;
@@ -23,6 +29,10 @@ public class MJInternalFrame extends JInternalFrame implements
 	}
 
 	@Override
+	/*
+	 * Méthode appelé par le Listener quand la fenetre veut etre supprimé
+	 * 
+	 */
 	public void vetoableChange(PropertyChangeEvent pce)
 			throws PropertyVetoException {
 		// TODO Auto-generated method stub
@@ -37,7 +47,7 @@ public class MJInternalFrame extends JInternalFrame implements
 					throw new PropertyVetoException("Annuler", null);
 				}
 				else{
-					if(this instanceof MCmdJInternalFrame)
+					if(this instanceof MTerminalJInternalFrame)
 						_connexion.getCompte().getFenetrePrincipale().deletePublic(this,Constante.code_terminal_affichage);
 					else if(this instanceof MVNCJInternalFrame)
 						_connexion.getCompte().getFenetrePrincipale().deletePublic(this,Constante.code_vnc_afficage);

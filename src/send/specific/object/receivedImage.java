@@ -11,9 +11,10 @@ import javax.swing.ImageIcon;
 
 /**
  * Permet de recevoir une image
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
+
 public class receivedImage {
 	public static ImageIcon receivedImage(ObjectInputStream ois,
 			boolean sauvegarde) throws ClassNotFoundException, IOException {

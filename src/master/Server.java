@@ -13,7 +13,7 @@ import loggingSystem.Log;
  *
  */
 public class Server extends Thread {
-
+	
 	private static Compte compteActuel;
 	public static Log log;
 	private static final int PORT = 443;

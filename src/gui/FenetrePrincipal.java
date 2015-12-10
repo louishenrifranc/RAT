@@ -29,7 +29,7 @@ import constante.Constante;
 /**
  * GUI pour le Maitre, gère une liste de connexions, gère les cliques sur les boutons et se charge de les envoyer au controle (connexion)
  * Correspond au modèle dans le schéma MVC
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 public class FenetrePrincipal {
@@ -43,13 +43,13 @@ public class FenetrePrincipal {
 	private  JList<String> list;
 	private Boolean modifiable;
 	/**
-	 * Launch the application.
+	 * Lance l'application.
 	 */
 	private JToolBar toolBar;
 	
 
 	/**
-	 * Create the application.
+	 * Crée l'application.
 	 */
 	public FenetrePrincipal() {
 		initialize();
@@ -142,7 +142,7 @@ public class FenetrePrincipal {
 
 				if(keycode == Constante.code_terminal_affichage)													// SI une connexion est selectionne
 				{
-					MCmdJInternalFrame mcmdJF = new MCmdJInternalFrame(connexion.get_user_name()+" term",
+					MTerminalJInternalFrame mcmdJF = new MTerminalJInternalFrame(connexion.get_user_name()+" term",
 										actualframes.size(), connexion);		// Nouvelle fenetre
 					
 					actualframes.addElement(mcmdJF);							// Ajoute la fenetre a la liste de la page actuelle
@@ -188,9 +188,9 @@ public class FenetrePrincipal {
 				}
 				else if(keycode == Constante.code_vnc_afficage)
 				{
-
-					Affichage affichage=new Affichage();
-					affichage.setVisible(true);
+					connexion.sendVNCcommand();
+				//	Affichage affichage=new Affichage();
+				//	affichage.setVisible(true);
 				}
 				else if(keycode == Constante.code_info_affichage)
 				{
@@ -272,12 +272,7 @@ public class FenetrePrincipal {
 	{
 		Vector<MJInternalFrame> x=frames.get(Index_To_Connexion.indexOf(co));
 		return x;
-	}
-	
-	
-	
-	
-	
+	}	
 	
 	/**
 	 * Recupere l'index de l'element choisi dans la liste des connexions choisis
@@ -287,9 +282,6 @@ public class FenetrePrincipal {
 	{
 		return list.getSelectedIndex();
 	}
-	
-	
-	
 	
 	/**
 	 * Initialise la fenetre Principale
@@ -378,9 +370,6 @@ public class FenetrePrincipal {
 		
 		frame.getContentPane().add(desktopPane, BorderLayout.CENTER);
 		
-		
-		
-	
 		JButton btnNewButton_3 = new JButton("VNC");
 		btnNewButton_3.setIcon(new ImageIcon(Paths.get("")
 				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"screen54.png"));
@@ -421,7 +410,6 @@ public class FenetrePrincipal {
 			}
 		});
 	
-		
 		JButton btnNewButton_6 = new JButton("Envoyer");
 		btnNewButton_6.setIcon(new ImageIcon(Paths.get("")
 				.toAbsolutePath().toString()+File.separator+"ressources"+File.separator+"tray33.png"));
@@ -475,16 +463,12 @@ public class FenetrePrincipal {
 		
 		for(int i=0;i<20;i++)
 			frames.add(new Vector<MJInternalFrame>());
-
 		
 	}
 	
-	
-	
-	
 	/**
 	 * Modifie la liste actuelle des connexions possibles
-	 * @param connexions
+	 * @param connexions : la liste des connexions a mettre dans la Jlist
 	 */
 	public synchronized void setJlist(Vector<Connexion> connexions)
 	{

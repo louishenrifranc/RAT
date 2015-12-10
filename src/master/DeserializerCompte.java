@@ -8,7 +8,12 @@ import java.io.ObjectInputStream;
 public class DeserializerCompte {
 
 	private static ObjectInputStream ois;
-
+	
+	/**
+	 * Permet de charger un compte
+	 * @param args
+	 * @return
+	 */
 	public static Compte charger(String args) {
 		Compte compte = null;
 		File fichier = new File(args);

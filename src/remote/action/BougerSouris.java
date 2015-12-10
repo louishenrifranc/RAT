@@ -3,7 +3,11 @@ package remote.action;
 import java.awt.Robot;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-
+/**
+ * 
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
+ *
+ */
 public class BougerSouris implements ActionVNC {
 
 	/**********************************************************************************************************************************************/

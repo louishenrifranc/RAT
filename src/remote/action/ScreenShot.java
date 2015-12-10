@@ -7,11 +7,14 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import javax.swing.ImageIcon;
+
+import client.Esclave;
 /**
  * Classe qui redéfinit la classe de l'interface RemoteActions. Utilise le robot pour creer une capture d'ecran.  
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 public class ScreenShot implements ActionVNC {
@@ -39,14 +42,12 @@ public class ScreenShot implements ActionVNC {
 /*													   CONSTRUCTEUR																	   			   /	
 /**********************************************************************************************************************************************/
 
-	public ImageIcon executer(Robot robot) throws IOException {
+	public BufferedImage executer(Robot robot) throws IOException {
 		// TODO Auto-generated method stub
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		BufferedImage screenshot = robot.createScreenCapture(new Rectangle(
-				dimension.width, dimension.height));
-		Image img =Toolkit.getDefaultToolkit().createImage(screenshot.getSource());
-		ImageIcon icon = new ImageIcon(img);
-		
+				dimension.width, dimension.height));		
+        BufferedImage img=robot.createScreenCapture(new Rectangle(dimension.width, dimension.height));
 	/**	ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(screenshot, "jpg", baos);
 		size = ByteBuffer.allocate(6).putInt(baos.size()).array();
@@ -62,7 +63,7 @@ public class ScreenShot implements ActionVNC {
 
 		System.out.println("[debug] ScreenShot: commande executer");
 	**/
-		return icon;
+		return img;
 	
 	}
 

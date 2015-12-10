@@ -14,7 +14,7 @@ import master.Connexion;
 
 /**
  * Classe Héritant de MJinternalFrame qui ouvre un fenetre de Renseignement
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  */
 public class MInfoJInternalFrame extends MJInternalFrame {
 	private Icon _icon;

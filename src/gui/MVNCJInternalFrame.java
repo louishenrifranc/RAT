@@ -6,7 +6,7 @@ import master.Connexion.Affichage;
 /**
  *
  * Classe Heritant de MJinternalFrame qui ouvre la VNC
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 public class MVNCJInternalFrame extends MJInternalFrame{

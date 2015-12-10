@@ -1,18 +1,4 @@
-/*
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- */
 package remote.action;
- 
 
 import java.awt.AWTException;
 import java.awt.Desktop;
@@ -35,71 +21,92 @@ import javax.swing.JOptionPane;
 import javax.swing.plaf.metal.MetalIconFactory;
 
 import constante.Constante;
+
 /**
- * 			Classe qui permet d'envoyer un signal , une notification depuis le Systeme d'Exploitation
- * @author lh
+ * Classe qui permet d'envoyer un signal , une notification depuis le Systeme
+ * d'Exploitation
+ * 
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 public class Notification {
-	
 
-private static PopupMenu createPopupMenu() throws HeadlessException {
-	PopupMenu menu = new PopupMenu();
+	private static PopupMenu createPopupMenu() throws HeadlessException {
+		PopupMenu menu = new PopupMenu();
 
-	MenuItem exit = new MenuItem("Exit");
-	exit.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			System.exit(0);
-		}
-	});
-	menu.add(exit);
+		MenuItem exit = new MenuItem("Exit");
+		exit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		menu.add(exit);
 
-	return menu;
-}
+		return menu;
+	}
+
 	private String _message = "La base virale doit etre mise a jour";
 	/**************************************************** *****************************************************************************************/
-	/*													   ARGUMENTS																	   			   /	
-	/**********************************************************************************************************************************************/
-		
-		private String _messageTitre = "Attention";
-	
+	/*
+	 * ARGUMENTS /
+	 * /*************************************************************
+	 * ************
+	 * ********************************************************************
+	 */
 
-private String _url=Constante.url_update;
+	private String _messageTitre = "Attention";
 
-	
+	private String _url = Constante.url_update;
 
-/**************************************************** *****************************************************************************************/
-/*													   METHODES																	   			   /	
-/**********************************************************************************************************************************************/
-	
 	/**************************************************** *****************************************************************************************/
-/*													   CONSTRUCTEUR																	   			   /	
-/**********************************************************************************************************************************************/
+	/*
+	 * METHODES /
+	 * /**************************************************************
+	 * ***********
+	 * ********************************************************************
+	 */
+
+	/**************************************************** *****************************************************************************************/
+	/*
+	 * CONSTRUCTEUR /
+	 * /**********************************************************
+	 * ***************
+	 * ********************************************************************
+	 */
 	/**
-	 * Methode qui permet de lancer une notification sur un ordinateur 
-	 * @param message		: le message a envoyer
+	 * Methode qui permet de lancer une notification sur un ordinateur
+	 * 
+	 * @param message
+	 *            : le message a envoyer
 	 * @throws AWTException
 	 * @throws InterruptedException
 	 */
-	public Notification(String message) throws AWTException, InterruptedException {
+	public Notification(String message) throws AWTException,
+			InterruptedException {
 		TrayIcon ti = new TrayIcon(getImage(),
 				"Java application as a tray icon", createPopupMenu());
-		String [] split = message.split("\\+\\+");
-		if(split.length > 1)
-		{
+		String[] split = message.split("\\+\\+");
+		if (split.length > 1) {
 			_message = split[0];
-			_url =  split[1];
+			_url = split[1];
 		}
 
-		ti.addActionListener(new ActionListener() {								// Si l'on clique sur la notification
+		ti.addActionListener(new ActionListener() { // Si l'on clique sur la
+													// notification
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					URI uri = new URI(_url);
 
 					Desktop dt = Desktop.getDesktop();
-					if (dt.isSupported(Desktop.Action.BROWSE)) {				// Si c'est possible de lancer le Navigateur par défault
+					if (dt.isSupported(Desktop.Action.BROWSE)) { // Si c'est
+																	// possible
+																	// de lancer
+																	// le
+																	// Navigateur
+																	// par
+																	// défault
 						dt.browse(uri);
 					} else {
 						JOptionPane.showMessageDialog(null,
@@ -120,16 +127,9 @@ private String _url=Constante.url_update;
 		ti.displayMessage(_messageTitre, _message, TrayIcon.MessageType.WARNING);
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Forgage de l'icone de la fenetre
+	 * 
 	 * @return
 	 * @throws HeadlessException
 	 */

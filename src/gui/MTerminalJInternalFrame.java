@@ -23,14 +23,14 @@ import master.Connexion;
 /**
  * Classe Heritant de MJinternalFrame qui ouvre un fenetre ressemblant a un CMD
  * Permet d'envoyer des Commandes aux Esclaves et de recuperer la sortie dans la fenetre
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
-public class MCmdJInternalFrame extends MJInternalFrame {
+public class MTerminalJInternalFrame extends MJInternalFrame {
 	private JPanel _jpanelFille;
 	private JTextArea _jTextArea;
 	private JTextField _jTextField;
-	public MCmdJInternalFrame(String title, int nframe,
+	public MTerminalJInternalFrame(String title, int nframe,
 			final Connexion connexion) {
 		super(title, connexion, nframe);
 		_jpanelFille = _jpanel;													// Creation de l'interface graphique
@@ -58,31 +58,18 @@ public class MCmdJInternalFrame extends MJInternalFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String line = _jTextField.getText();
-				connexion.sendCmdCommand(line, MCmdJInternalFrame.this);
+				connexion.sendCmdCommand(line, MTerminalJInternalFrame.this);
 				_jTextField.setText("");
-				append(line+">\n");
-			}
+				append(connexion.get_user_name()+">"+line+"\n");			}
 		});
 
-	}
-
-	
-	/**
-	 * Fonction obsolete
-	 * @param string
-	 * @throws BadLocationException
-	 */
-	public void add(String string) throws BadLocationException {
-		StyledDocument sd = (StyledDocument) _jTextArea.getDocument();
-		sd.insertString(sd.getLength(), string, null);
 	}
 
 	/**
 	 * Fonction qui ajoute a la "fenetre" de CMD une chaine de caractere
 	 * @param s :  la chaine a ajouté
 	 */
-	public void append(String s) { // better implementation--uses					
-		// StyleContext
+	public void append(String s) { 
 		_jTextArea.setEditable(true);
 
 		StyleContext sc = StyleContext.getDefaultStyleContext();

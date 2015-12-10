@@ -6,7 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
-
+/**
+ * 
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
+ *
+ */
 public class SendSpecificObject {
 
 

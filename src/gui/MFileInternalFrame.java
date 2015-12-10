@@ -13,7 +13,7 @@ import constante.Constante;
 /**
  * Classe Héritant de MJinternalFrame qui ouvre une JFileChooser qui choisit quel fichier envoyé sur le fichier de l'esclave
  * Si un CMD a déjà été ouvert, l'envoi dans le dossier actuelle du CMD 
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  */
 public class MFileInternalFrame extends MJInternalFrame{
 
@@ -62,7 +62,12 @@ public class MFileInternalFrame extends MJInternalFrame{
 		  }
 		}
 	
-	
+	/**
+	 * Fenetre héritant de MJInternalFrame, ouvre une fenetre permettant de choisir un fichier à envoyer
+	 * @param title
+	 * @param connexion
+	 * @param nframe
+	 */
 	public MFileInternalFrame(String title, final Connexion connexion, int nframe) {
 		super(title, connexion, nframe);
 		 	JFileChooser fileChooser = new JFileChooser();

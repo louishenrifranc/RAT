@@ -1,11 +1,15 @@
 package master;
 
-import gui.MCmdJInternalFrame;
+import gui.FenetrePrincipal;
+import gui.MJInternalFrame;
+import gui.MTerminalJInternalFrame;
 
+import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,107 +37,134 @@ public class Connexion {
 	/**
 	 * Classe qui se charge de l'affichage de l'ecran de l'esclave Permet de
 	 * prendre le controle de la souris, et naviguer sur l'ordinateur de
-	 * l'esclave * @author lh
+	 * l'esclave * Ne fonctionne pas
+	 * 
+	 * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
 	 */
 
 	public static class Affichage extends JFrame {
 		private ArrayBlockingQueue<ActionVNC> _remoteActionsQueue;
-		private boolean arret = true;
-		private JLabel label = new JLabel();
 		private Timer timer;
-
+		private boolean isLaunched;
+		private JLabel jlabel;
+		private JFrame frame;
 		public Affichage() {
-
-			_remoteActionsQueue = new ArrayBlockingQueue<ActionVNC>(20); // Creer
-																			// une
-																			// ArrayList
-																			// d'arguments
-			System.out.println("[debug] Affichage: Constructeur");
-			label.addMouseListener(new MouseAdapter() { // Ajoute un listener
-														// sur la souris
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					// TODO Auto-generated method stub
-					super.mouseClicked(e);
-				}
-			});
-			// setSize(Constante.WINDOW_WIDTH, Constante.WINDOW_HEIGHT);
-
-			Server.log.enregistrerFichier("Ajout d'un listener de la souris");
-
-			timer = new Timer(); // Redemmande un screenshot toutes les 2
-									// secondes pour mettre a jour
-									// fenetre
+			/**
+			 * _remoteActionsQueue = new ArrayBlockingQueue<ActionVNC>(20); //
+			 * Creer // une // ArrayList // d'arguments
+			 * System.out.println("[debug] Affichage: Constructeur");
+			 * label.addMouseListener(new MouseAdapter() { // Ajoute un listener
+			 * // sur la souris
+			 * 
+			 * @Override public void mouseClicked(MouseEvent e) { // TODO
+			 *           Auto-generated method stub super.mouseClicked(e); } });
+			 *           // setSize(Constante.WINDOW_WIDTH,
+			 *           Constante.WINDOW_HEIGHT);
+			 * 
+			 *           Server.log.enregistrerFichier(
+			 *           "Ajout d'un listener de la souris");
+			 * 
+			 *           timer = new Timer(); // Redemmande un screenshot toutes
+			 *           les 2 // secondes pour mettre a jour // fenetre
+			 *           timer.scheduleAtFixedRate(new TimerTask() {
+			 * @Override public void run() { // TODO Auto-generated method stub
+			 *           try { _remoteActionsQueue.put(new ScreenShot());
+			 *           System.out
+			 *           .println("[debug] Affichage: Nouveau Screen ajouter a la queue"
+			 *           );
+			 * 
+			 *           } catch (InterruptedException e) { // TODO
+			 *           Auto-generated catch block e.printStackTrace(); } } },
+			 *           1, 5000);
+			 *           Server.log.enregistrerFichier("Ajout d'un timer");
+			 * 
+			 *           final Thread envoi = new Thread() { // Des qu'un nouvel
+			 *           objer // apparait dans la liste, se // charge de
+			 *           l'envoyer
+			 * @Override public void run() { while (arret) { try {
+			 * 
+			 *           if (!_remoteActionsQueue.isEmpty()) { ActionVNC ra =
+			 *           _remoteActionsQueue.poll(); _out.writeObject(ra);
+			 *           _out.flush(); } System.out .println(
+			 *           "[debug] Affichage: Envoit a l'esclave un RemoteAction"
+			 *           ); this.sleep(1000); Server.log .enregistrerFichier(
+			 *           "Envoi d'une nouvelle requete de RemoteActions"); }
+			 *           catch (IOException e) { // TODO Auto-generated catch
+			 *           block e.printStackTrace(); } catch
+			 *           (InterruptedException e) { // TODO Auto-generated catch
+			 *           block e.printStackTrace(); } } } }; envoi.start();
+			 * 
+			 *           addWindowListener(new WindowAdapter() { public void
+			 *           windowClosing(WindowEvent e) {
+			 *           System.out.println("Deconnexion"); timer.cancel();
+			 * 
+			 *           arret = false; _remoteActionsQueue.clear(); } });
+			 *           Server.log.enregistrerFichier(
+			 *           "Ajout d'un thread pour envoyer"); }
+			 * 
+			 *           public void setIcon() throws ClassNotFoundException,
+			 *           IOException { // Modifie // l'image // de BufferedImage
+			 *           img = null; // fond // TODO Auto-generated method stub
+			 *           try { System.out.println("trying to read Image"); img =
+			 *           ImageIO.read(_in);
+			 *           System.out.println("Image Reading successful....."); }
+			 *           catch (IOException e) { System.out.println(e); // TODO
+			 *           Auto-generated catch block e.printStackTrace(); } File
+			 *           save_path = new File(""); save_path.mkdirs(); try {
+			 *           ImageIO.write(img, "JPG", new File("img-" +
+			 *           System.currentTimeMillis() + ".jpg"));
+			 *           System.out.println("Image writing successful......"); }
+			 *           catch (IOException e) { // TODO Auto-generated catch
+			 *           block System.out.println(e); e.printStackTrace(); }
+			 **/
+			frame = new JFrame();
+			jlabel=new JLabel();
+			frame.setVisible(false);
+			frame.getContentPane().setLayout(new FlowLayout());
+			isLaunched=false;
+		}
+		public void startTimer(){
+			isLaunched=true;
+			timer = new Timer();
 			timer.scheduleAtFixedRate(new TimerTask() {
-				@Override
+			
 				public void run() {
-					// TODO Auto-generated method stub
 					try {
-						_remoteActionsQueue.put(new ScreenShot());
-						System.out
-								.println("[debug] Affichage: Nouveau Screen ajouter a la queue");
-
-					} catch (InterruptedException e) {
+					//	System.out.println("Envoit d'une nouvelle demande");
+						_out.writeObject(new ScreenShot());
+					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}, 1, 5000);
-			Server.log.enregistrerFichier("Ajout d'un timer");
-
-			final Thread envoi = new Thread() { // Des qu'un nouvel objer
-												// apparait dans la liste, se
-												// charge de l'envoyer
-				@Override
-				public void run() {
-					while (arret) {
-						try {
-
-							if (!_remoteActionsQueue.isEmpty()) {
-								ActionVNC ra = _remoteActionsQueue.poll();
-								_out.writeObject(ra);
-								_out.flush();
-							}
-							System.out
-									.println("[debug] Affichage: Envoit a l'esclave un RemoteAction");
-							this.sleep(1000);
-							Server.log
-									.enregistrerFichier("Envoi d'une nouvelle requete de RemoteActions");
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-			envoi.start();
-
-			addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
-					System.out.println("Deconnexion");
-					timer.cancel();
-
-					arret = false;
-					_remoteActionsQueue.clear();
-				}
-			});
-			Server.log.enregistrerFichier("Ajout d'un thread pour envoyer");
+			frame.setVisible(true);
 		}
-
-		public void setIcon() throws ClassNotFoundException, IOException { // Modifie
-																			// l'image
-																			// de
-																			// fond
-			// TODO Auto-generated method stub
-			System.out.println("[debug] Connexion:\n\n\n setIcon");
-			ImageIcon image = receivedImage.receivedImage(_in, true);
-			JLabel background1 = new JLabel(image);
-			getContentPane().add(background1);
+		public void stopTimer()
+		{
+			timer.cancel();
 		}
+		public boolean isLaunched() {
+			return isLaunched;
+		}
+		public void readImage() {
+			BufferedImage img = null; 
+			try {
+				img = ImageIO.read(_so.getInputStream());
+			} catch (IOException e) {
+				System.out.println(e);
+				
+				e.printStackTrace();
+			}
+			frame.remove(jlabel);
+			frame.getContentPane().add(jlabel=new JLabel(new ImageIcon(img)));
+			frame.pack();
+	//		frame.setVisible(true);
+			frame.repaint();
+		}
+		
 	}
+
 	private static ObjectInputStream _in; // Flux d'entrée
 	private static ObjectOutputStream _out; // Flux de sortie // Pour la VNC
 	private static String _user_name;
@@ -142,32 +174,19 @@ public class Connexion {
 	private String _file_separator;
 	private String _ip, _os_name, _numeroConnexion, _pays, _os_arch,
 			_os_version;
-	/**********************************************************************************************************************************************/
-	/*
-	 * ARGUMENT /
-	 * /**************************************************************
-	 * ***********
-	 * ********************************************************************
-	 */
-	private Socket _so;
-	private MCmdJInternalFrame mCmdJInternalFrame;
+	private static Socket _so;
+	private MTerminalJInternalFrame mCmdJInternalFrame;
 
-	/**********************************************************************************************************************************************/
-	/*
-	 * METHODES /
-	 * /**************************************************************
-	 * ***********
-	 * ********************************************************************
+	/**
+	 * Constructeur
+	 * 
+	 * @param so
+	 *            : le socket ouvert pour l'esclave
+	 * @param cp
+	 *            le compte auquel appartient la connexion
+	 * @throws ClassNotFoundException
 	 */
-
-	/**********************************************************************************************************************************************/
-	/*
-	 * CONSTRUCTEUR /
-	 * /**********************************************************
-	 * ***************
-	 * ********************************************************************
-	 */
-	public Connexion(Socket so,Compte cp) throws ClassNotFoundException {
+	public Connexion(Socket so, Compte cp) throws ClassNotFoundException {
 		super();
 		this._so = so;
 		try {
@@ -185,11 +204,12 @@ public class Connexion {
 																// par l'esclave
 			Server.log.enregistrerFichier("\n" + listInformation);
 
-			_compte=cp;
+			_compte = cp;
 			String[] splited = listInformation.split("\\+\\+"); // Affecte les
 																// variables aux
 																// parametres de
-									// la classe
+			_affichage = new Affichage();
+			// la classe
 			setFile_separator(splited[1]);
 			setUser_name(splited[2]);
 			setOs_version(splited[3]);
@@ -240,8 +260,7 @@ public class Connexion {
 		return _user_name;
 	}
 
-	public Compte getCompte()
-	{
+	public Compte getCompte() {
 		return _compte;
 	}
 
@@ -249,14 +268,12 @@ public class Connexion {
 		return _so;
 	}
 
-	private Connexion getThis()
-	{
+	private Connexion getThis() {
 		return this;
 	}
 
 	/**
 	 * Methode gérant la reception des objets de l'esclave
-	 * 
 	 */
 	public void receive() {
 		Thread reception = new Thread() {
@@ -272,13 +289,7 @@ public class Connexion {
 																	// VNC
 								Server.log
 										.enregistrerFichier("Recoit une image");
-
-								System.out
-										.println("[debug] Connexion: Reception codeImage");
-
-								_affichage.setIcon(); // Fait appelle a la
-														// methode de la classe
-														// Affichage
+								_affichage.readImage();
 
 							} else if (code.equals(Constante.code_cmd)) { // ...un
 																			// code
@@ -299,7 +310,8 @@ public class Connexion {
 										.enregistrerFichier("Recoit un fichier");
 								ReceivedSpecificObject.receivedFile(
 										(Integer) action, _in);
-								_compte.getFenetrePrincipale().Addinformation("RECU NOUVEAU FICHIER");
+								_compte.getFenetrePrincipale().Addinformation(
+										"RECU NOUVEAU FICHIER");
 							}
 						}
 
@@ -309,11 +321,11 @@ public class Connexion {
 						}
 
 					}
-				} catch (IOException  e) {
-					 System.out.println(_ip + " s'est deconnecte"); // Handle
-					 getThis()._compte.removeConnection(getThis());
-				} catch (ClassNotFoundException | InterruptedException e1){
-						e1.printStackTrace();
+				} catch (IOException e) {
+					System.out.println(_ip + " s'est deconnecte"); // Handle
+					getThis()._compte.removeConnection(getThis());
+				} catch (ClassNotFoundException | InterruptedException e1) {
+					e1.printStackTrace();
 				}
 			}
 		};
@@ -351,7 +363,7 @@ public class Connexion {
 	 * @param parent
 	 *            : la fenetre parent
 	 */
-	public void sendCmdCommand(String commande, MCmdJInternalFrame parent) {
+	public void sendCmdCommand(String commande, MTerminalJInternalFrame parent) {
 		mCmdJInternalFrame = parent;
 		try {
 			_out.writeObject(Constante.code_cmd);
@@ -363,6 +375,13 @@ public class Connexion {
 			_compte.removeConnection(this);
 			e.printStackTrace();
 		}
+	}
+
+	public void sendVNCcommand() {
+
+			if(!_affichage.isLaunched)
+				_affichage.startTimer();
+
 	}
 
 	public void sendfile(File file) {
@@ -427,18 +446,14 @@ public class Connexion {
 	private void setOs_version(String os_version) {
 		this._os_version = os_version;
 	}
-	
+
 	private void setPays(String pays) {
 		this._pays = pays;
 	}
+
 	private void setUser_name(String user_name) {
 		this._user_name = user_name;
 	}
-	/**
-	 * Methode qui demarre la VNC
-	 */
-	public void startAffichage() {
-		_affichage = new Affichage();
-	}
 
+	
 }

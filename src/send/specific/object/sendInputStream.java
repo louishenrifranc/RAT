@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 /**
  * Classe implementé pour la lecture du flux de sortie du terminal
  * Recupere l'inputStream du Process lancé dans Terminal 
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 public class sendInputStream implements Runnable {

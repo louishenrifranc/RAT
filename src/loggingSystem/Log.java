@@ -47,16 +47,21 @@ public class Log {
 /**********************************************************************************************************************************************/
 /*													   METHODES																	   			   /	
 /**********************************************************************************************************************************************/
+	/**
+	 * Ajoute au fichier le message string
+	 * @param string
+	 */
 	public void enregistrerFichier(String string) {
 		synchronized (file) {
 			pw.println(string);
 			pw.flush();
 		}
 	}
-
+	/*
+	 * Ferme le fichier
+	 */
 	public void fermerFichier() {
 		pw.flush();
 		pw.close();
 	}
-
 }

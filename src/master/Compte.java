@@ -60,7 +60,6 @@ public class Compte implements Serializable {
 		fp.setJlist(_listConnexion);
 		return true;
 	}
-
 	
 	public FenetrePrincipal getFenetrePrincipale()
 	{

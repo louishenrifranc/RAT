@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 /**
  * Classe implémentant la méthode statique appelé par les classes de controle de l'esclave et du maitre
  * Sauvegarde les fichiers recus dans le flux d'entrée
- * @author lh
+ * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
 public class ReceivedSpecificObject {
