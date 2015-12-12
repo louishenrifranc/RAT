@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -34,7 +35,7 @@ public class MTerminalJInternalFrame extends MJInternalFrame {
 			final Connexion connexion) {
 		super(title, connexion, nframe);
 		_jpanelFille = _jpanel;													// Creation de l'interface graphique
-		_jTextArea = new JTextArea(15,30);
+		_jTextArea = new JTextArea(15,15);
 		_jTextField = new JTextField();
 		_jTextArea.setOpaque(true);
 		_jTextArea.setForeground(Color.green);
@@ -52,6 +53,8 @@ public class MTerminalJInternalFrame extends MJInternalFrame {
 		
 		getContentPane().add(scrollpane, BorderLayout.NORTH);
 		getContentPane().add(_jTextField, BorderLayout.SOUTH);
+		getContentPane().add(new Canvas(),BorderLayout.CENTER);
+
 		_jTextArea.setEditable(false);
 		_jTextField.addActionListener(new AbstractAction() {					// Action Listener quand j'appuie sur Enter
 		

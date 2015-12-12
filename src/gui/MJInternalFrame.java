@@ -49,8 +49,8 @@ public class MJInternalFrame extends JInternalFrame implements
 				else{
 					if(this instanceof MTerminalJInternalFrame)
 						_connexion.getCompte().getFenetrePrincipale().deletePublic(this,Constante.code_terminal_affichage);
-					else if(this instanceof MVNCJInternalFrame)
-						_connexion.getCompte().getFenetrePrincipale().deletePublic(this,Constante.code_vnc_afficage);
+				//	else if(this instanceof MVNCJInternalFrame)
+					//	_connexion.getCompte().getFenetrePrincipale().deletePublic(this,Constante.code_vnc_afficage);
 					else if(this instanceof MInfoJInternalFrame)
 						_connexion.getCompte().getFenetrePrincipale().deletePublic(this,Constante.code_info_affichage);
 					else if(this instanceof MotherJInternalFrame){

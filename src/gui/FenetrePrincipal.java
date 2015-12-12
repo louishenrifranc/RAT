@@ -1,5 +1,4 @@
 package gui;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -9,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Vector;
-
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

