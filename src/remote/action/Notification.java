@@ -29,91 +29,69 @@ import constante.Constante;
  * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
-public class Notification {
+public class Notification
+{
 
-	private static PopupMenu createPopupMenu() throws HeadlessException {
-		PopupMenu menu = new PopupMenu();
+	// Parametres :
+	// =====================================================================
 
-		MenuItem exit = new MenuItem("Exit");
-		exit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-		menu.add(exit);
+	private String	_message		= "La base virale doit etre mise a jour";
+	private String	m_message	= "Attention";
+	private String	m_url			= Constante.url_update;
 
-		return menu;
-	}
+	
+	
+	// Constructeur :
+	// =====================================================================
 
-	private String _message = "La base virale doit etre mise a jour";
-	/**************************************************** *****************************************************************************************/
-	/*
-	 * ARGUMENTS /
-	 * /*************************************************************
-	 * ************
-	 * ********************************************************************
-	 */
-
-	private String _messageTitre = "Attention";
-
-	private String _url = Constante.url_update;
-
-	/**************************************************** *****************************************************************************************/
-	/*
-	 * METHODES /
-	 * /**************************************************************
-	 * ***********
-	 * ********************************************************************
-	 */
-
-	/**************************************************** *****************************************************************************************/
-	/*
-	 * CONSTRUCTEUR /
-	 * /**********************************************************
-	 * ***************
-	 * ********************************************************************
-	 */
 	/**
-	 * Methode qui permet de lancer une notification sur un ordinateur
-	 * 
+	 * Permet de lancer une notification sur un ordinateur
 	 * @param message
 	 *            : le message a envoyer
 	 * @throws AWTException
 	 * @throws InterruptedException
 	 */
 	public Notification(String message) throws AWTException,
-			InterruptedException {
-		TrayIcon ti = new TrayIcon(getImage(),
-				"Java application as a tray icon", createPopupMenu());
+			InterruptedException
+	{
+		TrayIcon ti = new TrayIcon(getImage(), "Java application as a tray icon",
+				createPopupMenu());
 		String[] split = message.split("\\+\\+");
-		if (split.length > 1) {
+		if (split.length > 1)
+		{
 			_message = split[0];
-			_url = split[1];
+			m_url = split[1];
 		}
 
-		ti.addActionListener(new ActionListener() { // Si l'on clique sur la
-													// notification
+		ti.addActionListener(new ActionListener()
+		{ // Si l'on clique sur la
+			// notification
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					URI uri = new URI(_url);
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					URI uri = new URI(m_url);
 
 					Desktop dt = Desktop.getDesktop();
-					if (dt.isSupported(Desktop.Action.BROWSE)) { // Si c'est
-																	// possible
-																	// de lancer
-																	// le
-																	// Navigateur
-																	// par
-																	// défault
+					if (dt.isSupported(Desktop.Action.BROWSE))
+					{ 																							// Si c'est
+																												// possible
+																												// de lancer
+																												// le
+																												// Navigateur
+																												// par
+																												// défault
 						dt.browse(uri);
-					} else {
-						JOptionPane.showMessageDialog(null,
-								Constante.message_url);
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, Constante.message_url);
 					}
 
-				} catch (URISyntaxException | IOException e1) {
+				}
+				catch (URISyntaxException | IOException e1)
+				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -124,7 +102,7 @@ public class Notification {
 
 		Thread.sleep(3000);
 
-		ti.displayMessage(_messageTitre, _message, TrayIcon.MessageType.WARNING);
+		ti.displayMessage(m_message, _message, TrayIcon.MessageType.WARNING);
 	}
 
 	/**
@@ -133,11 +111,32 @@ public class Notification {
 	 * @return
 	 * @throws HeadlessException
 	 */
-	private Image getImage() throws HeadlessException {
+	private Image getImage() throws HeadlessException
+	{
 		Icon defaultIcon = MetalIconFactory.getTreeHardDriveIcon();
 		Image img = new BufferedImage(defaultIcon.getIconWidth(),
 				defaultIcon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		defaultIcon.paintIcon(new Panel(), img.getGraphics(), 0, 0);
 		return img;
+	}
+	
+	
+	
+	private static PopupMenu createPopupMenu() throws HeadlessException
+	{
+		PopupMenu menu = new PopupMenu();
+
+		MenuItem exit = new MenuItem("Exit");
+		exit.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				System.exit(0);
+			}
+		});
+		menu.add(exit);
+
+		return menu;
 	}
 }

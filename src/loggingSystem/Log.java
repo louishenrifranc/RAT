@@ -14,53 +14,69 @@ import java.nio.file.Paths;
  *
  */
 
-public class Log {
-/**********************************************************************************************************************************************/
-/*													   ARGUMENT																	   			   /	
-/**********************************************************************************************************************************************/
-	private static Path cheminactuel = Paths.get("");
+public class Log
+{
 
-	private static File file;
-	private static final String nomfichier = cheminactuel.toAbsolutePath()
-			.toString()
-			+ System.getProperty("file.separator")
-			+ "Log"
-			+ System.getProperty("file.separator") + "log.txt";
-	private static PrintWriter pw;
+	// Parametres :
+	// =====================================================================
 
-/**********************************************************************************************************************************************/
-/*													   CONSTRUCTEUR																	   			   /	
-/**********************************************************************************************************************************************/
-	public Log() {
+	private static Path				cheminactuel	= Paths.get("");
+
+	private static File				file;
+	private static final String	nomfichier		= cheminactuel.toAbsolutePath()
+																		.toString()
+																		+ System
+																				.getProperty("file.separator")
+																		+ "Log"
+																		+ System
+																				.getProperty("file.separator")
+																		+ "log.txt";
+	private static PrintWriter		pw;
+
+
+	// Constructeur :
+	// =====================================================================
+
+	public Log()
+	{
 		super();
 		file = new File(nomfichier);
 
-		try {
+		try
+		{
 			pw = new PrintWriter(new BufferedWriter(new FileWriter(nomfichier,
 					true)));
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-/**********************************************************************************************************************************************/
-/*													   METHODES																	   			   /	
-/**********************************************************************************************************************************************/
+
+
+	// Methodes :
+	// =====================================================================
+
 	/**
 	 * Ajoute au fichier le message string
 	 * @param string
 	 */
-	public void enregistrerFichier(String string) {
-		synchronized (file) {
+	public void enregistrerFichier(String string)
+	{
+		synchronized (file)
+		{
 			pw.println(string);
 			pw.flush();
 		}
 	}
+
 	/*
 	 * Ferme le fichier
 	 */
-	public void fermerFichier() {
+	public void fermerFichier()
+	{
 		pw.flush();
 		pw.close();
 	}

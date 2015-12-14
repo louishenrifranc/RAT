@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.nio.ByteOrder;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -27,67 +29,96 @@ import master.Connexion;
  * @author Clement Collet & Louis Henri Franc & Mohammed Boukhari
  *
  */
-public class MTerminalJInternalFrame extends MJInternalFrame {
-	private JPanel _jpanelFille;
-	private JTextArea _jTextArea;
-	private JTextField _jTextField;
+public class MTerminalJInternalFrame extends MJInternalFrame
+{
+	
+
+	// Parametres :
+	// =====================================================================
+
+	private JPanel			_jpanelFille;
+	private JTextArea		m_champCommande;
+	private JTextField	m_champTexte;
+
+	
+
+	// Constructeur :
+	// =====================================================================
+
+	
 	public MTerminalJInternalFrame(String title, int nframe,
-			final Connexion connexion) {
+			final Connexion connexion)
+	{
 		super(title, connexion, nframe);
-		_jpanelFille = _jpanel;													// Creation de l'interface graphique
-		_jTextArea = new JTextArea(15,15);
-		_jTextField = new JTextField();
-		_jTextArea.setOpaque(true);
-		_jTextArea.setForeground(Color.green);
-		_jTextArea.setBackground(Color.BLACK);
-		_jTextField.setForeground(Color.green);
-		_jTextField.setBackground(Color.BLACK);
+		_jpanelFille = m_panel;													// Creation de l'interface graphique
+		m_champCommande = new JTextArea(15, 15);
+
+		m_champTexte = new JTextField();
+		m_champCommande.setOpaque(true);
+		m_champCommande.setForeground(Color.green);
+		m_champCommande.setBackground(Color.BLACK);
+		m_champTexte.setForeground(Color.green);
+		m_champTexte.setBackground(Color.BLACK);
 
 		setBackground(Color.black);
-		
+
 		Font font1 = new Font("SansSerif", Font.BOLD, 10);
-		_jTextArea.setFont(font1);
+		m_champCommande.setFont(font1);
 		setContentPane(_jpanelFille);
 		getContentPane().setLayout(new BorderLayout());							// Ajoute une barre de Scroll
-		JScrollPane scrollpane=new JScrollPane(_jTextArea);					
-		
-		getContentPane().add(scrollpane, BorderLayout.NORTH);
-		getContentPane().add(_jTextField, BorderLayout.SOUTH);
-		getContentPane().add(new Canvas(),BorderLayout.CENTER);
+		JScrollPane scrollpane = new JScrollPane(m_champCommande);
+		m_champCommande.setMaximumSize(new java.awt.Dimension(getHeight() / 4,
+				getWidth()));
+		Canvas canvas;
+		getContentPane().add(canvas = new Canvas(), BorderLayout.NORTH);
+		canvas.setMaximumSize(new java.awt.Dimension(1, getWidth()));
+		getContentPane().add(scrollpane, BorderLayout.SOUTH);
+		getContentPane().add(m_champTexte, BorderLayout.CENTER);
 
-		_jTextArea.setEditable(false);
-		_jTextField.addActionListener(new AbstractAction() {					// Action Listener quand j'appuie sur Enter
-		
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				String line = _jTextField.getText();
-				connexion.sendCmdCommand(line, MTerminalJInternalFrame.this);
-				_jTextField.setText("");
-				append(connexion.get_user_name()+">"+line+"\n");			}
-		});
+		m_champCommande.setEditable(false);
+		m_champTexte.addActionListener(new AbstractAction()
+		{					// Action Listener quand j'appuie sur Enter
+
+					@Override
+					public void actionPerformed(ActionEvent arg0)
+					{
+						String line = m_champTexte.getText();
+						connexion.sendCmdCommand(line, MTerminalJInternalFrame.this);
+						m_champTexte.setText("");
+						append(connexion.get_user_name() + ">" + line + "\n");
+					}
+				});
 
 	}
+
+	
+	
+	
+
+	// Methodes :
+	// =====================================================================
 
 	/**
 	 * Fonction qui ajoute a la "fenetre" de CMD une chaine de caractere
 	 * @param s :  la chaine a ajouté
 	 */
-	public void append(String s) { 
-		_jTextArea.setEditable(true);
+	public void append(String s)
+	{
+		m_champCommande.setEditable(true);
 
 		StyleContext sc = StyleContext.getDefaultStyleContext();
-	
+
 		AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY,
-		        StyleConstants.Foreground, Color.green);
-		int len = _jTextArea.getDocument().getLength(); 
+				StyleConstants.Foreground, Color.green);
+		int len = m_champCommande.getDocument().getLength();
 		// getText().length();
-		_jTextArea.setCaretPosition(len); 
-//		_jTextArea.setCharacterAttributes(aset, false);
-		_jTextArea.replaceSelection(s); 
-		DefaultCaret caret = (DefaultCaret) _jTextArea.getCaret();
-		  caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-			_jTextArea.setEditable(false);
-		
+		m_champCommande.setCaretPosition(len);
+		//		_jTextArea.setCharacterAttributes(aset, false);
+		m_champCommande.replaceSelection(s);
+		DefaultCaret caret = (DefaultCaret) m_champCommande.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		m_champCommande.setEditable(false);
+
 	}
 
 }
