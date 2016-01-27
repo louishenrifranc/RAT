@@ -1,17 +1,11 @@
 package remote.action;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-
-import javax.swing.ImageIcon;
-
-import client.Esclave;
 
 /**
  * Classe qui redéfinit la classe de l'interface RemoteActions. Utilise le robot pour creer une capture d'ecran.  

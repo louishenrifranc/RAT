@@ -1,11 +1,8 @@
 package master;
 
-import gui.FenetrePrincipal;
-import gui.MJInternalFrame;
 import gui.MTerminalJInternalFrame;
 
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -22,7 +19,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,7 +29,6 @@ import remote.action.ClickerSouris;
 import remote.action.ScreenShot;
 import send.specific.object.ReceivedSpecificObject;
 import send.specific.object.SendSpecificObject;
-import send.specific.object.receivedImage;
 import constante.Constante;
 
 public class Connexion

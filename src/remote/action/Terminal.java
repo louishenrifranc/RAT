@@ -1,6 +1,5 @@
 package remote.action;
 
-import java.awt.List;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import constante.Constante;
 
 public class Terminal
 {
-
 	// Parametres :
 	// =====================================================================
 	private String				m_cheminExecution;

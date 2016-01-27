@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -22,14 +21,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import sound.Jukebox;
 import master.Connexion;
+import sound.Jukebox;
 import constante.Constante;
-import de.ksquared.system.keyboard.KeyEvent;
 
 /**
  * GUI pour le Maitre, gère une liste de connexions, gère les cliques sur les
@@ -49,7 +46,7 @@ public class FenetrePrincipal
 	private JDesktopPane								m_desktopPane;
 	private Vector<Integer>							m_fenetres;				// Pour chaque connection quelle fenetre
 																						// est actuellement affichée
-	private MJFrame										m_frame;					// La Jframe
+	private MFrame										m_frame;					// La Jframe
 	private Vector<Vector<MJInternalFrame>>	m_frames;				// InternalFrame pour
 																						// toutes
 																						// les connexions
@@ -378,7 +375,7 @@ public class FenetrePrincipal
 	 */
 	private synchronized void initialize()
 	{
-		m_frame = new JFrame();
+		m_frame = new MFrame();
 		m_frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
 				Paths.get("").toAbsolutePath().toString() + File.separator
 						+ "ressources" + File.separator + "mask1.png"));
@@ -475,6 +472,7 @@ public class FenetrePrincipal
 				// CMD
 			}
 		});
+	
 		toolBar.add(btnNewButton_2);
 
 		m_desktopPane = new JDesktopPane(); // Espace de travail
@@ -496,7 +494,6 @@ public class FenetrePrincipal
 			public void mouseClicked(MouseEvent e)
 			{
 				clicked(Constante.code_vnc_afficage);
-				Jukebox.play("whereismymind.wav");
 			}
 		});
 		toolBar.add(btnNewButton_3);
@@ -519,7 +516,6 @@ public class FenetrePrincipal
 			public void mouseClicked(MouseEvent e)
 			{
 				clicked(Constante.code_info_affichage);
-				Jukebox.play("DesiJourney.wav");
 			}
 		});
 		toolBar.add(btnNewButton_4);
@@ -540,8 +536,6 @@ public class FenetrePrincipal
 			{
 				clicked(Constante.code_troll); // 1 correspond au code pour
 				// lancer une JInFrame de CMD
-				Jukebox.play("KissesinParadise.wav");
-
 			}
 		});
 
@@ -618,7 +612,6 @@ public class FenetrePrincipal
 		for (int i = 0; i < 20; i++)
 			m_frames.add(new Vector<MJInternalFrame>());
 		launchPlaylist();
-
 	}
 
 	/**
@@ -654,10 +647,8 @@ public class FenetrePrincipal
 	{
 		ArrayList<String> liste = new ArrayList<String>(); // Listes des
 		// musiques
-		liste.add("KissesinParadise.wav");
-		liste.add("DesiJourney.wav");
-		liste.add("trololo.wav");
-		liste.add("whereismymind.wav");
+		liste.add(Constante.nom1);liste.add(Constante.nom8);liste.add(Constante.nom3);liste.add(Constante.nom4);liste.add(Constante.nom5);
+		liste.add(Constante.nom6);liste.add(Constante.nom7);
 		Jukebox.addPlaylist("BestPlaylist", liste);
 	}
 
